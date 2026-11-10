@@ -1,0 +1,130 @@
+/* ============================================================
+   Regla de lectura: ningún texto pasa de 1–2 líneas.
+   Se corta con «…» y se expande con un toque (componente <Clamp>)
+   o, cuando la fila ya abre un detalle, ese detalle muestra todo.
+   ============================================================ */
+
+/* Texto expandible */
+.clamp {
+  min-width: 0;
+}
+.clamp-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines, 2);
+  line-clamp: var(--lines, 2);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.clamp-text.can {
+  cursor: pointer;
+}
+.clamp-text.open {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+.clamp-more {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 28px;
+}
+
+/* Utilidades para texto que no se expande (títulos, nombres, metadatos) */
+.clamp-1,
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.clamp-1 {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+.clamp-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Títulos y nombres: 2 líneas (el detalle completo vive en la hoja que abre el toque) */
+.act-text,
+.ps-title,
+.hero-card-line,
+.res-title,
+.exp-text strong,
+.stop-text strong,
+.plan-text,
+.day-cover-name,
+.pr-text strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+/* Datos de apoyo: 1 línea con «…» */
+.act-meta .meta-link,
+.cl-text,
+.pr-text span,
+.stop-text span,
+.exp-text span {
+  max-width: 100%;
+}
+.act-meta .meta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.toast span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.exp-text small,
+.stop-text small,
+.pr-text small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ps-notes.clamp-text,
+.res-notes.clamp-text {
+  white-space: normal;
+}
+
+/* Relojes: la hora nunca se parte */
+.clock strong {
+  white-space: nowrap;
+}
+.clock small {
+  white-space: nowrap;
+}
+
+.cl-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-align: left;
+}
+.ps-title {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}

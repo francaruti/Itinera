@@ -1,0 +1,130 @@
+:root {
+  /* Neutros cálidos al estilo Airbnb */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f7f7f7;
+  --surface-glass: rgba(255, 255, 255, 0.88);
+  --ink: #222222;
+  --muted: #6a6a6a;
+  --line: #e4e4e4;
+
+  /* Acento: azul en degradé y sus variantes (reemplaza el rosa) */
+  --accent: #2f6bff;
+  --accent-2: #1e4fe0;
+  --accent-strong: #1a3fb8;
+  --accent-bright: #5b9dff;
+  --accent-soft: #e8f0ff;
+  --accent-ink: #ffffff;
+  --accent-grad: linear-gradient(135deg, #6aa8ff 0%, #2f6bff 48%, #1a3fb8 100%);
+  --accent-grad-h: linear-gradient(90deg, #5b9dff 0%, #2f6bff 55%, #1e4fe0 100%);
+  --accent-glow: color-mix(in srgb, #2f6bff 38%, transparent);
+
+  /* Regiones de destino (ver CITY_META): azul real para el noreste y celeste para el sur */
+  --ny: #2f6bff;
+  --ny-ink: #ffffff;
+  --ny-soft: #e8f0ff;
+  --fl: #0277b6;
+  --fl-bright: #38bdf8;
+  --fl-ink: #ffffff;
+  --fl-soft: #e0f2fe;
+
+  --danger: #c13515;
+  --danger-soft: #fdebe6;
+  --ok: #0b7a42;
+  --ok-soft: #dcf4e6;
+  --warn: #a8650a;
+  --warn-soft: #fdecc8;
+
+  --radius-s: 10px;
+  --radius: 16px;
+  --radius-l: 24px;
+  --shadow-s: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.1);
+  --shadow-l: 0 24px 60px -16px rgba(0, 0, 0, 0.35);
+
+  /* Titulares: Montserrat Bold */
+  --font-display: 'Montserrat Variable', 'Montserrat', 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font: 'Archivo Variable', 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --header-h: 64px;
+  --nav-h: 0px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0f1013;
+    --surface: #1a1b20;
+    --surface-2: #24262d;
+    --surface-glass: rgba(26, 27, 32, 0.86);
+    --ink: #f5f5f5;
+    --muted: #a6a8b0;
+    --line: #34363f;
+    --accent: #5b9dff;
+    --accent-2: #3d7bff;
+    --accent-strong: #2f6bff;
+    --accent-bright: #7db4ff;
+    --accent-soft: #15233f;
+    --accent-grad: linear-gradient(135deg, #7db4ff 0%, #4a85ff 50%, #2f56e8 100%);
+    --accent-grad-h: linear-gradient(90deg, #7db4ff 0%, #4a85ff 55%, #3d7bff 100%);
+    --accent-glow: color-mix(in srgb, #4a85ff 40%, transparent);
+    --ny: #5b8cff;
+    --ny-ink: #06122e;
+    --ny-soft: #15233f;
+    --fl: #38bdf8;
+    --fl-bright: #38bdf8;
+    --fl-ink: #03202e;
+    --fl-soft: #0c2a3a;
+    --danger: #ff7a5c;
+    --danger-soft: #3a1a14;
+    --ok: #3ccf94;
+    --ok-soft: #123326;
+    --warn: #f0b24a;
+    --warn-soft: #3a2a0c;
+    --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+    --shadow-l: 0 24px 60px -16px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #0f1013;
+  --surface: #1a1b20;
+  --surface-2: #24262d;
+  --surface-glass: rgba(26, 27, 32, 0.86);
+  --ink: #f5f5f5;
+  --muted: #a6a8b0;
+  --line: #34363f;
+  --accent: #5b9dff;
+  --accent-2: #3d7bff;
+  --accent-strong: #2f6bff;
+  --accent-bright: #7db4ff;
+  --accent-soft: #15233f;
+  --accent-grad: linear-gradient(135deg, #7db4ff 0%, #4a85ff 50%, #2f56e8 100%);
+  --accent-grad-h: linear-gradient(90deg, #7db4ff 0%, #4a85ff 55%, #3d7bff 100%);
+  --accent-glow: color-mix(in srgb, #4a85ff 40%, transparent);
+  --ny: #5b8cff;
+  --ny-ink: #06122e;
+  --ny-soft: #15233f;
+  --fl: #38bdf8;
+  --fl-bright: #38bdf8;
+  --fl-ink: #03202e;
+  --fl-soft: #0c2a3a;
+  --danger: #ff7a5c;
+  --danger-soft: #3a1a14;
+  --ok: #3ccf94;
+  --ok-soft: #123326;
+  --warn: #f0b24a;
+  --warn-soft: #3a2a0c;
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  --shadow-l: 0 24px 60px -16px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+@media (max-width: 860px) {
+  :root {
+    --header-h: 56px;
+    --nav-h: 92px;
+  }
+}

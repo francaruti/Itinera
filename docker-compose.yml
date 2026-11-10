@@ -1,0 +1,16 @@
+services:
+  viaje:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      # Código para entrar a la app. Déjalo vacío para acceso abierto (solo red privada).
+      ACCESS_CODE: ${ACCESS_CODE:-}
+      # Cuentas iniciales (correo:admin,correo2:member). Sin ellas nadie puede entrar si hay código de acceso.
+      SEED_USERS: ${SEED_USERS:-}
+    volumes:
+      - viaje-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  viaje-data:

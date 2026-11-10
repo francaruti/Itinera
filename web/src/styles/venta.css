@@ -1,0 +1,587 @@
+/* Portada pública (sin sesión) y onboarding de primera visita. Solo tokens de tokens.css. */
+
+.venta {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.venta .container {
+  padding-inline: 16px;
+}
+/* Los botones de la portada son enlaces: sin subrayado */
+.venta a.btn,
+.venta-bienvenida a.btn {
+  text-decoration: none;
+}
+.venta-top {
+  position: relative;
+  z-index: 2;
+  padding: 12px 0;
+}
+.venta-top-in {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.venta-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.venta-marca strong {
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+.venta-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+/* Héroe */
+.venta-hero {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+  padding: 12px 0 40px;
+}
+.venta-eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.venta-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.venta-sub {
+  max-width: 36ch;
+  margin: 14px 0 22px;
+  color: var(--muted);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+}
+
+/* Acciones: CTA principal, secundario y garantía junto a cada grupo */
+.venta-acciones {
+  display: grid;
+  gap: 12px;
+  justify-items: stretch;
+}
+/* Grupo de CTA dentro de una sección (el de a mitad de página): separado de lo anterior */
+.venta-seccion > .venta-acciones {
+  margin-top: 28px;
+}
+.venta-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.venta-cta {
+  min-height: 48px;
+  padding: 12px 20px;
+  font-size: 16px;
+  flex: 1 1 200px;
+}
+.venta-garantia {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.venta-garantia svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--ok);
+}
+.venta-garantia strong {
+  color: var(--ink);
+}
+
+/* Visual del héroe: mapa estilizado, dispositivo con la captura y tarjeta del día */
+.venta-visual {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 400 / 540;
+  margin: 8px auto 0;
+}
+.venta-mapa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.venta-mapa-tierra {
+  fill: var(--surface-2);
+}
+.venta-mapa-agua {
+  fill: var(--accent-soft);
+}
+.venta-mapa-calle {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 2;
+}
+.venta-mapa-manzana {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.venta-ruta {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1 11;
+}
+.venta-pin circle {
+  fill: var(--accent);
+  stroke: var(--bg);
+  stroke-width: 3;
+}
+.venta-km rect {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.venta-km text {
+  fill: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.venta-device {
+  position: absolute;
+  left: 22%;
+  top: 8%;
+  width: 56%;
+  animation: venta-flota 7s ease-in-out infinite;
+}
+.venta-shot-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  box-shadow: inset 0 0 0 7px var(--surface-2);
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent);
+}
+.venta-shot-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.venta-veladura {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+.venta-card {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 4%;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: 18px;
+  background: var(--surface-glass);
+  box-shadow: var(--shadow-s);
+  backdrop-filter: blur(12px) saturate(1.3);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+}
+.venta-card-dia {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.venta-card-linea {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.venta-card-linea strong {
+  color: var(--ink);
+}
+@keyframes venta-flota {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Secciones */
+.venta-seccion {
+  padding: 48px 0 8px;
+}
+.venta-h2 {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.venta-tarjetas,
+.venta-pasos {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.venta-tarjeta,
+.venta-paso-item {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+}
+.venta-tarjeta h3,
+.venta-paso-item h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.venta-tarjeta p,
+.venta-paso-item p {
+  margin: 0;
+  color: var(--muted);
+}
+.venta-ico {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.venta-pasos {
+  counter-reset: paso;
+}
+.venta-paso-item {
+  counter-increment: paso;
+}
+.venta-paso-item h3::before {
+  content: counter(paso);
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* Planes: mensual y anual, el anual destacado */
+.venta-planes {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.venta-plan {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+}
+.venta-plan-destacado {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.venta-plan h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.venta-precio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+  color: var(--muted);
+}
+.venta-precio strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.venta-plan-nota {
+  display: inline-block;
+  margin: 12px 0 0;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: var(--accent-grad);
+  color: var(--accent-ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.venta-prueba {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+@media (min-width: 640px) {
+  .venta-planes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Preguntas frecuentes */
+.venta-faq {
+  border-top: 1px solid var(--line);
+}
+.venta-faq-item {
+  border-bottom: 1px solid var(--line);
+}
+.venta-faq-item summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 12px 0;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.venta-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.venta-faq-item summary::after {
+  content: '+';
+  margin-left: auto;
+  flex: none;
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+}
+.venta-faq-item[open] summary::after {
+  content: '–';
+}
+.venta-faq-item p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+/* Cierre y compra */
+.venta-cierre {
+  padding-bottom: 8px;
+}
+.venta-comprar {
+  margin-top: 12px;
+  justify-self: start;
+}
+.venta-demo {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Pie */
+.venta-pie {
+  border-top: 1px solid var(--line);
+  padding: 20px 0 28px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.venta-pie-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+.venta-pie p {
+  margin: 0;
+}
+.venta-pie nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.venta-pie a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--muted);
+}
+
+/* Onboarding */
+.venta-bienvenida-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+.venta-paso-cuenta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 650;
+}
+.venta-paso-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 300px;
+  padding: 26px;
+}
+.venta-paso-card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+  letter-spacing: -0.015em;
+  outline: none;
+}
+.venta-paso-texto {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+.venta-ico-grande {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 4px;
+}
+.venta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.venta-chips li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 14px;
+  font-weight: 600;
+}
+.venta-paso-nav {
+  display: flex;
+  gap: 10px;
+}
+.venta-paso-nav .btn {
+  flex: 1 1 0;
+  min-height: 48px;
+}
+.venta-puntos {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.venta-puntos li {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--line);
+  transition: width 0.2s var(--ease), background-color 0.2s;
+}
+.venta-puntos li.activo {
+  width: 24px;
+  background: var(--accent);
+}
+.venta-saltar {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Enlace de vuelta a la portada en la pantalla de acceso */
+.lock-volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Tablet y escritorio: texto y CTA a la izquierda, dispositivo a la derecha */
+@media (min-width: 768px) {
+  .venta-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    gap: 40px;
+    padding: 28px 0 56px;
+  }
+  .venta-acciones {
+    justify-items: start;
+  }
+  .venta-cta {
+    flex: 0 0 auto;
+  }
+  .venta-visual {
+    margin: 0 0 0 auto;
+  }
+}
+@media (min-width: 900px) {
+  .venta-tarjetas,
+  .venta-pasos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .venta-hero {
+    gap: 64px;
+    padding: 48px 0 80px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  }
+  .venta-seccion {
+    padding-top: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venta-device {
+    animation: none;
+  }
+  .venta-puntos li {
+    transition: none;
+  }
+}

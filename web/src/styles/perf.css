@@ -1,0 +1,59 @@
+/* ============================================================
+   Rendimiento y batería
+   - Fondo estático (antes: 3 círculos enormes con desenfoque de 90 px animados sin parar)
+   - Sin animaciones decorativas infinitas ni desenfoques de fondo en pantallas táctiles
+   - Sin animaciones cuando la persona pide menos movimiento
+   ============================================================ */
+.ambient i {
+  display: none;
+}
+.ambient {
+  background:
+    radial-gradient(60vmax 50vmax at 0% 0%, color-mix(in srgb, var(--accent-bright) 14%, transparent), transparent 70%),
+    radial-gradient(55vmax 45vmax at 100% 100%, color-mix(in srgb, var(--fl-bright) 12%, transparent), transparent 70%);
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .photo.kb.ready img,
+  .sun,
+  .sun-pulse,
+  .route-arc .arc-path path,
+  .arc-plane,
+  .chip.now,
+  .day-btn.today::after,
+  .qa-dot,
+  .wx-rays,
+  .wx-drift,
+  .wx-drop,
+  .wx-bolt,
+  .wx-flake,
+  .wx-fog line,
+  .wx-moon {
+    animation: none !important;
+  }
+}
+
+/* El desenfoque de fondo (backdrop-filter) obliga a repintar capas enteras en cada fotograma del scroll */
+@media (hover: none) {
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .header,
+  .bottom-nav {
+    background: color-mix(in srgb, var(--surface) 97%, transparent);
+  }
+  .more-scrim,
+  .overlay {
+    background: rgba(7, 12, 20, 0.55);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}

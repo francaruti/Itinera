@@ -1,22 +1,61 @@
 {
-  "name": "itinera",
-  "version": "0.1.0",
+  "name": "viajes",
+  "version": "1.0.0",
   "private": true,
+  "description": "Planificador de viaje: itinerario, mapa, reservas, pendientes, presupuesto y clima.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "API_PORT=3001 tsx watch --env-file-if-exists=.env server/src/index.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build": "npm run build:web && npm run build:server",
+    "build:web": "vite build --config web/vite.config.ts",
+    "build:server": "esbuild server/src/index.ts --bundle --platform=node --format=esm --target=node22 --packages=external --outfile=dist/server/index.js",
+    "start": "node --disable-warning=ExperimentalWarning dist/server/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p web/tsconfig.json --noEmit",
+    "reset-db": "tsx server/src/reset.ts",
+    "verificar": "node scripts/verificar-publicacion.mjs",
+    "build:vercel": "node scripts/build-vercel.mjs"
   },
   "dependencies": {
-    "next": "15.3.6",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/montserrat": "^5.3.0",
+    "@types/leaflet.markercluster": "^1.5.6",
+    "canvas-confetti": "^1.9.4",
+    "compression": "^1.8.2",
+    "express": "^5.2.1",
+    "framer-motion": "^14.0.0",
+    "helmet": "^8.3.0",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
+    "lucide-react": "^1.51.0",
+    "pg": "^8.23.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@types/node": "22.15.0",
-    "@types/react": "19.1.8",
-    "@types/react-dom": "19.1.6",
-    "typescript": "5.8.3"
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.6",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^26.6.4",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/supertest": "^7.2.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "esbuild": "^0.28.2",
+    "supertest": "^7.3.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^4.1.11"
   }
 }

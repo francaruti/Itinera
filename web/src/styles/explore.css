@@ -1,0 +1,566 @@
+/* ---------- Detalle de un plan ---------- */
+.ps {
+  display: grid;
+  gap: 14px;
+}
+.ps-cover {
+  position: relative;
+  height: 190px;
+  margin: -22px -22px 0;
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+}
+.ps-cover .photo {
+  position: absolute;
+  inset: 0;
+}
+@media (max-width: 640px) {
+  .ps-cover {
+    border-radius: 24px 24px 0 0;
+  }
+}
+.ps-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ps-head .cat-badge.lg {
+  margin-top: 4px;
+}
+.ps-title {
+  font-size: clamp(20px, 5.4vw, 26px);
+  line-height: 1.15;
+  margin: 2px 0 4px;
+}
+.ps-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ps-facts .chip {
+  gap: 5px;
+}
+.ps-why {
+  font-size: 16.5px;
+  line-height: 1.5;
+}
+.ps-tips {
+  list-style: none;
+  margin: 0;
+  padding: 12px 14px;
+  display: grid;
+  gap: 8px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  font-size: 14.5px;
+}
+.ps-tips li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+.ps-tips svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--accent);
+}
+.ps-notes {
+  color: var(--muted);
+  font-size: 14.5px;
+}
+.ps-tips .clamp {
+  flex: 1;
+  min-width: 0;
+}
+.ps-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+.ps-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 8px;
+}
+.ps-row .btn {
+  padding-inline: 10px;
+  font-size: 14.5px;
+  text-decoration: none;
+}
+.btn.lg {
+  padding: 15px 20px;
+  font-size: 17px;
+  border-radius: 16px;
+  text-decoration: none;
+}
+.btn.ok-btn {
+  background: var(--ok-soft);
+  color: var(--ok);
+  box-shadow: inset 0 0 0 1.5px var(--ok);
+}
+
+/* Botón principal dentro de la fila: «Reservar» */
+.chip.cta {
+  background: var(--accent-grad);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 4px 10px -4px var(--accent-glow);
+}
+.chip.cta:hover {
+  filter: brightness(1.08);
+}
+
+/* ---------- Alternativas ---------- */
+.alt-intro {
+  margin: -4px 0 14px;
+  line-height: 1.45;
+}
+.alt-intro strong {
+  color: var(--ink);
+}
+.alt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.alt-card {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 14px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-s);
+}
+.alt-media {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-2);
+  align-self: stretch;
+  min-height: 96px;
+}
+.alt-media .photo {
+  position: absolute;
+  inset: 0;
+}
+.alt-ico {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.alt-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  align-content: start;
+}
+.alt-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+.alt-top strong {
+  font-size: 16.5px;
+  line-height: 1.2;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.alt-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 800;
+  font-size: 14px;
+  flex: none;
+}
+.alt-rate svg {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+.alt-why {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.alt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.alt-chips .chip {
+  font-size: 12px;
+  padding: 2px 8px;
+  gap: 4px;
+}
+.alt-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.alt-actions .btn {
+  text-decoration: none;
+}
+@media (max-width: 420px) {
+  .alt-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+}
+
+/* Botón ⇄ siempre visible: es la acción secundaria clave de cada plan */
+.act-actions {
+  opacity: 1;
+}
+.act-actions .edit-btn,
+.act-actions .grip {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.act:hover .act-actions .edit-btn,
+.act:hover .act-actions .grip,
+.act:focus-within .act-actions .edit-btn,
+.act:focus-within .act-actions .grip {
+  opacity: 1;
+}
+@media (hover: none) {
+  .act-actions .grip {
+    opacity: 1;
+  }
+}
+.alt-btn {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.alt-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- Añadir plan ---------- */
+.add-plan {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.add-plan-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.add-plan-row .btn {
+  flex: 1 1 auto;
+}
+
+/* ---------- Menos ruido en móvil: héroe compacto ---------- */
+@media (max-width: 860px) {
+  .hero {
+    padding: 16px 16px 14px;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-size: clamp(30px, 9.6vw, 44px);
+  }
+  .hero-dates {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .route-arc,
+  .hero .sun {
+    display: none;
+  }
+  .hero-card {
+    padding: 14px;
+    gap: 10px;
+  }
+  .cd-num {
+    font-size: clamp(22px, 7vw, 30px);
+  }
+}
+
+/* «Para tener en cuenta» plegable */
+.facts summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.facts summary::-webkit-details-marker {
+  display: none;
+}
+.facts summary .card-title {
+  margin: 0;
+}
+.facts summary .chev {
+  transition: transform 0.2s var(--ease);
+}
+.facts[open] summary .chev {
+  transform: rotate(180deg);
+}
+.facts-body {
+  margin-top: 12px;
+}
+
+/* Notas del día: plegadas para no saturar */
+.day-notes {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.day-notes summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.day-notes summary::-webkit-details-marker {
+  display: none;
+}
+.day-notes summary .notes-label {
+  margin: 0;
+  flex: none;
+}
+.day-notes .notes-preview {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.day-notes[open] .notes-preview {
+  display: none;
+}
+.day-notes .chev {
+  margin-left: auto;
+}
+.day-notes .chev {
+  color: var(--muted);
+  transition: transform 0.2s var(--ease);
+}
+.day-notes[open] .chev {
+  transform: rotate(180deg);
+}
+.day-notes .textarea {
+  margin-top: 10px;
+}
+
+/* ---------- «Siguiente»: el plan que viene, en grande ---------- */
+.nu {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 18px;
+  padding: 18px;
+  border-radius: 26px;
+  color: #fff;
+  background: linear-gradient(135deg, #5b9dff 0%, #2f6bff 45%, #1a3fb8 100%);
+  box-shadow: 0 22px 40px -22px rgba(26, 63, 184, 0.75);
+  overflow: hidden;
+}
+.nu::before {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -50px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28), transparent 70%);
+  pointer-events: none;
+}
+.nu.now {
+  background: linear-gradient(135deg, #34d399 0%, #14b8a6 45%, #0f766e 100%);
+  box-shadow: 0 22px 40px -22px rgba(15, 118, 110, 0.75);
+}
+.nu-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.nu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  font-weight: 800;
+}
+.nu-time {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+}
+.nu h3 {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.15;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
+}
+.nu p {
+  position: relative;
+  font-size: 14px;
+  opacity: 0.92;
+}
+.nu .nu-travel {
+  font-weight: 650;
+  opacity: 1;
+}
+.nu-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+.nu-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  transition: width 0.6s var(--ease);
+}
+.nu-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.nu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 800;
+}
+.nu-btn.primary {
+  flex: 1 1 140px;
+  background: #fff;
+  color: #1a3fb8;
+  border-color: transparent;
+}
+.nu.now .nu-btn.primary {
+  color: #0f766e;
+}
+
+.nu-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.nu-btn.primary {
+  grid-column: 1 / -1;
+  min-height: 48px;
+  font-size: 15.5px;
+}
+
+/* Botón flotante «Añadir» (Pendientes y Maleta) */
+.cl-fab {
+  position: fixed;
+  z-index: 55;
+  right: 16px;
+  bottom: calc(var(--nav-h, 96px) + 18px + env(safe-area-inset-bottom, 0px));
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 0 20px 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent-grad);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 0 16px 30px -10px var(--accent-glow);
+}
+.cl-fab:active {
+  transform: scale(0.95);
+}
+@media (min-width: 861px) {
+  .cl-fab {
+    bottom: 28px;
+    right: 28px;
+  }
+}
+
+/* Frases útiles */
+.phrases {
+  grid-column: 1 / -1;
+}
+.phrases-cats {
+  margin: 4px 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.phrases-cats::-webkit-scrollbar {
+  display: none;
+}
+.phrases-cats .seg {
+  width: max-content;
+}
+.phrase-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.phrase-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.phrase-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.phrase-text strong {
+  font-size: 16.5px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.phrase-text small {
+  color: var(--muted);
+  font-size: 14px;
+}
+.phrase-actions {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}

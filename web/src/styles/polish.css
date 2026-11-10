@@ -1,0 +1,403 @@
+/* ---------- Detalles premium ---------- */
+
+/* Barra de progreso de lectura bajo el header */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2.5px;
+  background: var(--accent-grad-h);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  border-radius: 0 2px 2px 0;
+  pointer-events: none;
+}
+.app-header {
+  transition: box-shadow 0.3s var(--ease), background-color 0.3s;
+}
+.app-header.scrolled {
+  box-shadow: 0 8px 24px -16px rgba(0, 0, 0, 0.35);
+}
+
+/* Estilo Airbnb: búsqueda en píldora con sombra suave */
+.search-btn {
+  border-radius: 999px;
+  border-color: transparent;
+  box-shadow: var(--shadow);
+  padding-inline: 14px 10px;
+}
+.search-btn:hover {
+  box-shadow: 0 0 0 1px var(--line), var(--shadow);
+}
+
+/* Logo con vida */
+.brand svg {
+  transition: transform 0.4s var(--ease);
+}
+.brand:hover svg {
+  transform: rotate(-8deg) scale(1.07);
+}
+
+/* Entrada escalonada de tarjetas al cambiar de vista */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+main .aside > *,
+main .stat,
+main .cl-group,
+main .view-head,
+main .res-section,
+main .two-col > .card,
+main .info-grid > .card,
+main .budget-bar,
+main .cl-summary,
+main .cl-add {
+  animation: rise 0.6s var(--ease) both;
+}
+main .aside > :nth-child(2),
+main .stat:nth-child(2),
+main .cl-group:nth-of-type(2) {
+  animation-delay: 70ms;
+}
+main .aside > :nth-child(3),
+main .stat:nth-child(3),
+main .cl-group:nth-of-type(3) {
+  animation-delay: 140ms;
+}
+main .stat:nth-child(4),
+main .cl-group:nth-of-type(4) {
+  animation-delay: 210ms;
+}
+
+/* Pull-to-refresh */
+.ptr {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  left: 50%;
+  margin-left: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: var(--shadow);
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* Invitación a instalar */
+.nudge {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--nav-h) + 22px + env(safe-area-inset-bottom, 0px));
+  z-index: 70;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 10px 12px 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-l);
+  max-width: 520px;
+  margin: 0 auto;
+}
+.nudge-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-grad);
+  color: #fff;
+  flex: none;
+  box-shadow: 0 6px 14px -6px var(--accent-glow);
+}
+.nudge strong {
+  display: block;
+  line-height: 1.2;
+}
+.nudge small {
+  display: block;
+  color: var(--muted);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* Barras de desplazamiento discretas */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted) 35%, transparent) transparent;
+}
+.route,
+.gallery-track,
+.day-chips {
+  scrollbar-width: none;
+}
+
+/* Pulsación más táctil en tarjetas interactivas */
+.place-card,
+.res-main,
+.act-body,
+.exp-row {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* El texto seleccionable de código mantiene su aspecto */
+.mono {
+  font-feature-settings: 'tnum', 'zero';
+}
+
+/* ---------- Robustez en pantallas pequeñas ---------- */
+.map-toolbar > .seg {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.meta-link {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.act-meta > * {
+  max-width: 100%;
+}
+.title-in,
+.day-date,
+.res-title,
+.cl-text,
+.exp-text strong,
+.pr-text strong,
+.picked-card strong {
+  overflow-wrap: anywhere;
+}
+
+/* Nada debe ensanchar la página: los contenedores pueden encogerse y el texto largo se parte. */
+main,
+.container,
+.card,
+.panel,
+.aside > *,
+.wx-card,
+.sheet,
+.res,
+.res-main {
+  min-width: 0;
+}
+.card,
+.sheet,
+.res,
+.wx-hero {
+  overflow-wrap: anywhere;
+}
+
+/* Los chips con texto largo se parten o recortan en lugar de ensanchar la página. */
+.chip {
+  max-width: 100%;
+}
+.people-split .chip,
+.chip.wrap,
+.act-meta .chip {
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Teléfonos pequeños (≤ 360 px) ---------- */
+.header-inner {
+  min-width: 0;
+}
+.brand {
+  min-width: 0;
+}
+.brand-text strong,
+.brand-text small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 380px) {
+  .header-inner {
+    gap: 8px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .brand-text small {
+    display: none;
+  }
+  .brand-text strong {
+    font-size: 16px;
+  }
+  .header-actions {
+    gap: 0;
+  }
+  .header-actions .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .sync-pill {
+    margin-right: 2px;
+  }
+  .bottom-nav {
+    left: 8px;
+    right: 8px;
+    height: 70px;
+  }
+  .bn-item {
+    font-size: 11px;
+  }
+  .bn-item span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .more-menu {
+    left: 8px;
+    right: 8px;
+  }
+  .more-item {
+    padding: 8px 10px;
+    gap: 9px;
+    font-size: 14px;
+  }
+  .hero {
+    padding: 20px 16px 18px;
+  }
+  .wx-hero {
+    padding: 16px;
+  }
+  .wx-now {
+    gap: 12px;
+  }
+  .wx-big {
+    width: 84px;
+    height: 84px;
+  }
+}
+
+
+/* ---------- Encabezado móvil ---------- */
+@media (max-width: 860px) {
+  /* `.tabs + .header-actions` (más específico) la dejaba pegada al logo: empujar a la derecha.
+     Con botones táctiles de 44 px, -12 px deja el icono a 16 px del borde, igual que el logo. */
+  .header-inner .header-actions,
+  .header-inner .tabs + .header-actions {
+    margin-left: auto;
+    margin-right: -12px;
+  }
+  /* El indicador «Sincronizado» sobra en el teléfono: solo aparece si hay algo que avisar */
+  .sync-pill.ok {
+    display: none;
+  }
+}
+
+/* Parada sin foto: recuadro con el icono de su categoría para mantener la alineación */
+.stop-thumb-empty {
+  display: grid;
+  place-items: center;
+}
+
+/* Menú «Más» en pantallas muy estrechas: una columna para que ningún nombre choque */
+@media (max-width: 350px) {
+  .more-menu {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .more-item {
+    min-height: 60px;
+  }
+}
+
+/* ---------- Móvil y tablet: objetivos táctiles de 44 px y mapa legible ---------- */
+@media (max-width: 860px) {
+  /* Marca del encabezado: la pulsación cubre la altura de la barra sin cambiar el texto */
+  .brand {
+    min-height: 44px;
+  }
+  /* Campos de texto: altura táctil mínima */
+  .input,
+  .textarea,
+  .title-in {
+    min-height: 44px;
+  }
+  .facts summary,
+  .link-btn,
+  .cl-text,
+  .lock-who,
+  .btn:not(.icon) {
+    min-height: 44px;
+  }
+  .facts summary {
+    align-items: center;
+  }
+  .link-btn {
+    align-items: center;
+    padding: 0;
+  }
+  /* Casilla pequeña: área de pulsación de 44 px centrada (el inset anterior daba 40 px) */
+  .mini-check::after {
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+  /* Selector de unidades (°C / °F) */
+  .seg button {
+    min-width: 44px;
+  }
+  /* Enlaces del acceso y de las páginas legales */
+  .lock-legal a,
+  .legal-back,
+  .legal-foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* Chips que son botones: el área de pulsación llega a 44 px sin ensanchar la fila */
+  .chip-btn,
+  .res-stub .chip {
+    position: relative;
+  }
+  .chip-btn::after,
+  .res-stub .chip::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+  /* Mapa: los días bajan a su propia fila en vez de encogerse hasta quedar invisibles */
+  .map-toolbar .day-chips {
+    flex: 1 1 100%;
+  }
+  /* Atribución de OpenStreetMap: el texto no se corta y el enlace es pulsable */
+  /* Separada de la esquina redondeada de la tarjeta, que recortaba la última letra */
+  .leaflet-bottom.leaflet-right .leaflet-control-attribution {
+    margin: 0 12px 12px 0;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .leaflet-control-attribution a {
+    display: inline-block;
+    padding: 16px 4px;
+    margin: -16px -4px;
+  }
+  /* Barra inferior casi opaca: el contenido de debajo no se lee a través de los botones */
+  .bottom-nav {
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+  }
+}

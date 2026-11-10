@@ -1,0 +1,63 @@
+.print-only {
+  display: none;
+}
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+  .ambient,
+  .app-header,
+  .bottom-nav,
+  .toasts,
+  main.main,
+  .skip-link,
+  .overlay {
+    display: none !important;
+  }
+  .print-only {
+    display: block;
+  }
+  .print-only h1 {
+    font-size: 24pt;
+    margin: 0;
+  }
+  .print-only h2 {
+    font-size: 13pt;
+    margin: 0 0 4px;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 2px;
+  }
+  .print-day {
+    break-inside: avoid;
+    margin-top: 14px;
+  }
+  .print-title {
+    font-weight: 700;
+    margin: 2px 0;
+  }
+  .print-day ul {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0;
+  }
+  .print-day li {
+    display: flex;
+    gap: 10px;
+    padding: 1.5px 0;
+  }
+  .print-time {
+    width: 62px;
+    flex: none;
+    font-weight: 700;
+  }
+  .print-notes {
+    font-size: 9.5pt;
+    color: #444;
+    margin: 2px 0 0;
+  }
+}
