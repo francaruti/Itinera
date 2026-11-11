@@ -30,7 +30,7 @@ export const plantilla = {
    * Correo de contacto que ven las personas en los textos legales.
    * «correo@correo.com» es solo un ejemplo: cámbialo por un correo tuyo antes de publicar.
    */
-  contactoEmail: 'itinera@creativas.app',
+  contactoEmail: 'itinova@creativas.app',
   /**
    * Garantía de reembolso que ofrece quien vende la app. Si el cobro va por Hotmart, el reembolso dentro de este plazo
    * lo gestiona Hotmart. La app no cobra: el texto de Términos lo aclara. Cambia el número aquí, no en la interfaz.
