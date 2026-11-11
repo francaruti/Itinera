@@ -83,7 +83,7 @@ function Terminos() {
       <h2>Prueba gratuita</h2>
       <p>
         La prueba dura {plantilla.pruebaDias} días y no tiene costo. Al terminar, se cobra el plan que hayas elegido: {precioTexto(plantilla.precios.mensual)} al mes o{' '}
-        {precioTexto(plantilla.precios.anual)} al año, con IVA incluido. El cobro se hace en dólares (USD) a través de Hotmart y el monto puede variar según el tipo de cambio. Al empezar la prueba con tus datos de pago, aceptas estas condiciones y sabes que el cobro será
+        {precioTexto(plantilla.precios.anual)} al año, con IVA incluido. El cobro se hace en pesos chilenos (CLP) a través de Hotmart. Al empezar la prueba con tus datos de pago, aceptas estas condiciones y sabes que el cobro será
         automático al terminar la prueba.
       </p>
       <p>Puedes cancelar cuando quieras; la cancelación se tramita con Hotmart y evita los cobros siguientes.</p>

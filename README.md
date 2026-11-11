@@ -36,7 +36,7 @@ Con Docker: `ACCESS_CODE=… SEED_USERS="tu@correo.com:admin" docker compose up 
 | Garantía en días (7) | `garantiaDias` en `shared/plantilla.ts`. Términos la menciona solo si el cobro va por Hotmart. |
 | Prueba en días (7) | `pruebaDias` en `shared/plantilla.ts`. La portada y el onboarding la anuncian; la app no la cobra ni la controla, así que debe coincidir con tu oferta en Hotmart. |
 | Enlace de compra (Hotmart) | `enlaceCompra` en `shared/plantilla.ts`. Vacío = la portada muestra «Demostración: no se cobra nada» y no hay botón de compra. |
-| Precios sugeridos (mensual y anual, en USD) | `precios` en `shared/plantilla.ts`. La portada los muestra; el anual equivale a 10 mensualidades («dos meses gratis»). |
+| Precios sugeridos (mensual y anual, en CLP) | `precios` en `shared/plantilla.ts`. La portada los muestra; el anual equivale a 10 mensualidades («dos meses gratis»). |
 | Captura del héroe de la portada | `web/public/landing/itinerario-hero.webp` (780 × 980, dos veces el ancho de 390 px). Textos de la portada en `web/src/lib/ventas.ts`. |
 | Textos legales (privacidad y términos) | `web/src/components/LegalPage.tsx` |
 | Pantalla de acceso (portada) | `web/src/components/LockScreen.tsx` |

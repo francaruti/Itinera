@@ -61,7 +61,7 @@ No hay cobros conectados. Esta plantilla no cobra ni procesa pagos, y así lo di
 - **Acceso de quien compra:** la app no crea cuentas al pagar. Añade a cada comprador con `SEED_USERS` (solo se usa al crear la base) o desde **Ajustes → Datos compartidos**. Si quieres automatizarlo, hazlo en el servidor, verificando las notificaciones de Hotmart y sin activar el acceso dos veces.
 - Pon `hotmart` en `true` en `shared/plantilla.ts` solo cuando esa integración esté implementada, probada y exportada con ese mismo valor.
 
-Los precios de la portada salen de `precios` en `shared/plantilla.ts` (mensual y anual, en USD). Precios sugeridos: confirma tu oferta en Hotmart antes de vender. Si cambias una cifra, cámbiala en `precios` y en tu oferta a la vez. La app no cobra: no añadas promesas de cobro que no existan.
+Los precios de la portada salen de `precios` en `shared/plantilla.ts` (mensual y anual, en CLP). Precios sugeridos: confirma tu oferta en Hotmart antes de vender. Si cambias una cifra, cámbiala en `precios` y en tu oferta a la vez. La app no cobra: no añadas promesas de cobro que no existan.
 
 ## 5 · IA
 
@@ -94,5 +94,5 @@ Ejemplo para tu página de venta (no es código de la app):
 3. Completa los `[COMPLETAR: …]` de `web/src/components/LegalPage.tsx` y revisa los textos con asesoría de tu país.
 4. Cambia `correo@correo.com` por tu correo de contacto en `shared/plantilla.ts`.
 5. Confirma que la garantía de Términos y tu oferta de Hotmart dicen lo mismo (7 días).
-6. Confirma que `precios` de `shared/plantilla.ts` coincide con tu oferta de Hotmart, en dólares, y que la prueba de 7 días (`pruebaDias`) está en esa oferta.
+6. Confirma que `precios` de `shared/plantilla.ts` coincide con tu oferta de Hotmart, en pesos chilenos (CLP), y que la prueba de 7 días (`pruebaDias`) está en esa oferta.
 7. Ejecuta `npm run verificar` y las pruebas (`npm test`).
