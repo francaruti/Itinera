@@ -206,24 +206,24 @@ describe('precios sugeridos', () => {
   const { mensual, anual, moneda } = plantilla.precios;
   const centavos = (n: number) => Math.round(n * 100);
 
-  it('van en EUR, con precios terminados en ,99 o ,90', () => {
-    expect(moneda).toBe('EUR');
-    expect([99, 90]).toContain(centavos(mensual) % 100);
-    expect([99, 90]).toContain(centavos(anual) % 100);
+  it('se muestran en CLP, sin decimales, con precios terminados en 990', () => {
+    expect(moneda).toBe('CLP');
+    expect(mensual % 1000).toBe(990);
+    expect(anual % 1000).toBe(900);
   });
 
   it('el anual son 10 mensualidades, es decir, dos meses gratis', () => {
     expect(centavos(anual)).toBe(centavos(mensual) * 10);
   });
 
-  it('la mensualidad está en el rango de consumo familiar o de bienestar (3,99 a 7,99 EUR)', () => {
-    expect(mensual).toBeGreaterThanOrEqual(3.99);
-    expect(mensual).toBeLessThanOrEqual(7.99);
+  it('la mensualidad está en el rango de consumo familiar o de bienestar (3.990 a 7.990 CLP)', () => {
+    expect(mensual).toBeGreaterThanOrEqual(3990);
+    expect(mensual).toBeLessThanOrEqual(7990);
   });
 
   it('la portada muestra los dos planes con su precio, «Dos meses gratis» y la prueba de 7 días', () => {
-    expect(precioTexto(mensual)).toBe('4,99\u00a0€');
-    expect(precioTexto(anual)).toBe('49,90\u00a0€');
+    expect(precioTexto(mensual)).toBe('$4.990');
+    expect(precioTexto(anual)).toBe('$49.900');
     const t = texto(renderToStaticMarkup(createElement(VentaContenido, { enlace: null })));
     expect(t).toContain(`${precioTexto(mensual).replace('\u00a0', ' ')} al mes`);
     expect(t).toContain(`${precioTexto(anual).replace('\u00a0', ' ')} al año`);

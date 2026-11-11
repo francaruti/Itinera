@@ -61,7 +61,7 @@ export function enlaceCompra(url: string = plantilla.enlaceCompra): string | nul
 }
 
 /** Precio para la portada con dos decimales siempre («$49.90»), como manda la plantilla de precios. */
-const formatoPrecio = new Intl.NumberFormat('es-ES', { style: 'currency', currency: plantilla.precios.moneda, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const formatoPrecio = new Intl.NumberFormat('es-CL', { style: 'currency', currency: plantilla.precios.moneda, maximumFractionDigits: 0 });
 export const precioTexto = (cantidad: number): string => formatoPrecio.format(cantidad);
 
 /* Copy de la página de venta y del onboarding. Solo lo que la app hace hoy. */

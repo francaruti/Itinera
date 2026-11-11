@@ -146,7 +146,7 @@ export function VentaContenido({ enlace = enlaceCompra(), conAcceso = true }: { 
           <p className="venta-prueba">Ambos incluyen las mismas funciones y una prueba de {plantilla.pruebaDias} días.</p>
           <p className="venta-prueba">
             Cómo funciona la prueba: empiezas con {plantilla.pruebaDias} días sin costo. Al terminar, se cobra el plan que elijas:{' '}
-            {precioTexto(plantilla.precios.mensual)} al mes o {precioTexto(plantilla.precios.anual)} al año, con IVA incluido. Si cancelas antes de que
+            {precioTexto(plantilla.precios.mensual)} al mes o {precioTexto(plantilla.precios.anual)} al año, con IVA incluido. Se cobra en dólares (USD) a través de Hotmart y el monto puede variar según el tipo de cambio. Si cancelas antes de que
             termine la prueba, no se te cobra nada. Puedes cancelar cuando quieras; la cancelación se tramita con Hotmart.
           </p>
         </section>

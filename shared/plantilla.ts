@@ -47,11 +47,11 @@ export const plantilla = {
    */
   enlaceCompra: '' as string,
   /**
-   * Precios sugeridos en euros, la moneda de venta. El anual equivale a 10 mensualidades y la portada lo presenta
+   * Precios mostrados en pesos chilenos (CLP). El cobro se hace en dólares (USD) a través de Hotmart, y el monto puede variar según el tipo de cambio. El anual equivale a 10 mensualidades y la portada lo presenta
    * como «dos meses gratis». Precios sugeridos: confirma tu oferta en Hotmart antes de vender. Cambia las cifras aquí
    * y en tu oferta a la vez.
    */
-  precios: { moneda: 'EUR', mensual: 4.99, anual: 49.9 },
+  precios: { moneda: 'CLP', cobro: 'USD', mensual: 4990, anual: 49900 },
   anioCopyright: 2026,
   /** Servicios reales conectados. Todo en `false` = la app funciona con datos guardados en tu servidor. */
   conexiones: { supabase: false, hotmart: false, resend: false } as Conexiones,
