@@ -16,9 +16,9 @@ function Privacidad() {
       <h2>Responsable del tratamiento</h2>
       <ul>
         <li>Titular: Francesca Caruti</li>
-        <li>Domicilio: [COMPLETAR: domicilio]</li>
+        <li>Domicilio: Ermitagaña 7, Pamplona</li>
         <li>Contacto: {plantilla.contactoEmail}</li>
-        <li>Ley aplicable: [COMPLETAR: ley aplicable]</li>
+        <li>Ley aplicable: derecho español</li>
       </ul>
 
       <h2>Qué datos se guardan</h2>
@@ -87,7 +87,7 @@ function Terminos() {
       </p>
 
       <h2>Ley aplicable</h2>
-      <p>[COMPLETAR: ley aplicable y tribunales]</p>
+      <p>Estos términos se rigen por el derecho español.</p>
 
       <p>Texto modelo: revísalo con asesoría legal de tu país antes de publicar la app.</p>
     </>
