@@ -15,8 +15,7 @@ function Privacidad() {
       <h1>Privacidad</h1>
       <h2>Responsable del tratamiento</h2>
       <ul>
-        <li>Razón social: MILLION BUSINESS DIGITAL</li>
-        <li>Identificador fiscal: [COMPLETAR: identificador fiscal]</li>
+        <li>Titular: Francesca Caruti</li>
         <li>Domicilio: [COMPLETAR: domicilio]</li>
         <li>Contacto: {plantilla.contactoEmail}</li>
         <li>Ley aplicable: [COMPLETAR: ley aplicable]</li>
