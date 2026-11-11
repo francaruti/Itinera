@@ -17,7 +17,8 @@ function Privacidad() {
       <h2>Responsable del tratamiento</h2>
       <ul>
         <li>Titular: Francesca Caruti</li>
-        <li>Domicilio: Ermitagaña 7, Pamplona</li>
+        <li>RUT: 19.111.603-8</li>
+        <li>Domicilio: Chicago 235, Quilicura, Chile</li>
         <li>Contacto: {plantilla.contactoEmail}</li>
         <li>Ley aplicable: derecho español</li>
       </ul>
