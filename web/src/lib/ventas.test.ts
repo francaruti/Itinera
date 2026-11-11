@@ -206,8 +206,8 @@ describe('precios sugeridos', () => {
   const { mensual, anual, moneda } = plantilla.precios;
   const centavos = (n: number) => Math.round(n * 100);
 
-  it('van en USD, la moneda de la app, con precios terminados en .99 o .90', () => {
-    expect(moneda).toBe('USD');
+  it('van en EUR, con precios terminados en ,99 o ,90', () => {
+    expect(moneda).toBe('EUR');
     expect([99, 90]).toContain(centavos(mensual) % 100);
     expect([99, 90]).toContain(centavos(anual) % 100);
   });
@@ -216,14 +216,14 @@ describe('precios sugeridos', () => {
     expect(centavos(anual)).toBe(centavos(mensual) * 10);
   });
 
-  it('la mensualidad está en el rango de consumo familiar o de bienestar (3,99 a 7,99 USD)', () => {
+  it('la mensualidad está en el rango de consumo familiar o de bienestar (3,99 a 7,99 EUR)', () => {
     expect(mensual).toBeGreaterThanOrEqual(3.99);
     expect(mensual).toBeLessThanOrEqual(7.99);
   });
 
   it('la portada muestra los dos planes con su precio, «Dos meses gratis» y la prueba de 7 días', () => {
-    expect(precioTexto(mensual)).toBe('$4.99');
-    expect(precioTexto(anual)).toBe('$49.90');
+    expect(precioTexto(mensual)).toBe('4,99\u00a0€');
+    expect(precioTexto(anual)).toBe('49,90\u00a0€');
     const t = texto(renderToStaticMarkup(createElement(VentaContenido, { enlace: null })));
     expect(t).toContain(`${precioTexto(mensual)} al mes`);
     expect(t).toContain(`${precioTexto(anual)} al año`);
