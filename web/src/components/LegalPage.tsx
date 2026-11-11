@@ -21,6 +21,9 @@ function Privacidad() {
         <li>Ley aplicable: derecho español</li>
       </ul>
 
+      <h2>Quién decide sobre tus datos</h2>
+      <p>Los datos del viaje se guardan en el servidor que instala la persona que usa la app. Esa persona decide qué datos guarda, quién entra y durante cuánto tiempo los conserva. El titular de esta app no tiene acceso a esos datos.</p>
+
       <h2>Qué datos se guardan</h2>
       <ul>
         <li>En el servidor que instales (SQLite o Postgres): el plan del viaje (días, horas, actividades, lugares y notas), las reservas que escribas, los pendientes, los gastos y los archivos que subas.</li>
@@ -37,11 +40,13 @@ function Privacidad() {
         <li>Ubicación: si tocas «Ir a mi ubicación», el navegador pide permiso. La posición se usa en el mapa y, si calculas una ruta, se envía a FOSSGIS como se indica arriba.</li>
       </ul>
 
+      <p>Algunos de estos servicios pueden estar fuera de la Unión Europea. Al consultarlos se envían datos técnicos, como la dirección IP. Cada proveedor explica en su política cómo trata esos datos.</p>
+
       <h2>Lo que no incluye la plantilla</h2>
       <p>No incluye publicidad, analítica ni rastreo. Si añades alguno, actualiza esta página.</p>
 
       <h2>Tus derechos</h2>
-      <p>Puedes pedir acceso, rectificación, supresión, oposición o portabilidad de tus datos escribiendo a {plantilla.contactoEmail}.</p>
+      <p>Puedes pedir acceso, rectificación, supresión, oposición o portabilidad de tus datos escribiendo a {plantilla.contactoEmail}. Si consideras que tus derechos no se respetan, puedes presentar una reclamación ante la autoridad de protección de datos de tu país.</p>
 
       <h2>Conservación</h2>
       <p>Los datos se conservan hasta que los borres en la app o hasta que la persona administradora elimine tu acceso. Los datos del navegador se borran al limpiar los datos del sitio.</p>
