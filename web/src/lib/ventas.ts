@@ -99,7 +99,7 @@ export const PREGUNTAS = [
   {
     pregunta: '¿Dónde se guardan mis datos?',
     respuesta:
-      'En el servidor donde se instala la app, con SQLite o Postgres. Los servicios de clima, búsqueda y rutas reciben solo lo que necesitan para responder. Lo detallado está en Privacidad.',
+      'En el servidor donde se instala la app, con SQLite o Postgres. Los servicios de clima, búsqueda y rutas reciben lo necesario para responder (por ejemplo, coordenadas o el texto que buscas), junto con datos técnicos como la dirección IP. Lo detallado está en Privacidad.',
   },
   {
     pregunta: '¿Pueden entrar mis compañeros de viaje?',
