@@ -225,8 +225,8 @@ describe('precios sugeridos', () => {
     expect(precioTexto(mensual)).toBe('4,99\u00a0€');
     expect(precioTexto(anual)).toBe('49,90\u00a0€');
     const t = texto(renderToStaticMarkup(createElement(VentaContenido, { enlace: null })));
-    expect(t).toContain(`${precioTexto(mensual)} al mes`);
-    expect(t).toContain(`${precioTexto(anual)} al año`);
+    expect(t).toContain(`${precioTexto(mensual).replace('\u00a0', ' ')} al mes`);
+    expect(t).toContain(`${precioTexto(anual).replace('\u00a0', ' ')} al año`);
     expect(t).toContain('Dos meses gratis');
     expect(plantilla.pruebaDias).toBe(7);
     expect(t).toContain('Ambos incluyen las mismas funciones y una prueba de 7 días.');
