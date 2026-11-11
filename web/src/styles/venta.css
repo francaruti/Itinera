@@ -52,7 +52,9 @@
   gap: 28px;
   align-items: center;
   padding: 12px 0 40px;
-  background: radial-gradient(60% 50% at 85% 10%, var(--accent-soft), transparent 70%);
+  background:
+    radial-gradient(70% 60% at 85% 0%, var(--accent-glow), transparent 70%),
+    linear-gradient(180deg, var(--accent-soft), transparent 75%);
 }
 .venta-eyebrow {
   margin: 0 0 10px;
@@ -279,7 +281,7 @@
   left: 50%;
   width: 100vw;
   transform: translateX(-50%);
-  background: var(--surface-2);
+  background: var(--accent-soft);
   z-index: -1;
 }
 .venta-tarjeta h3,
@@ -300,8 +302,9 @@
   height: 40px;
   margin-bottom: 12px;
   border-radius: 12px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--accent-grad);
+  color: var(--accent-ink);
+  box-shadow: 0 6px 16px -6px var(--accent-glow);
 }
 .venta-pasos {
   counter-reset: paso;
@@ -317,8 +320,8 @@
   height: 28px;
   margin-right: 10px;
   border-radius: 99px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--accent-grad);
+  color: var(--accent-ink);
   font-size: 14px;
   vertical-align: middle;
 }
