@@ -21,9 +21,9 @@ export const plantilla = {
    * Nombre de la app: cabecera, pestaña del navegador, instalación, textos legales y web/index.html y el manifiesto
    * de la PWA (ambos se generan desde este archivo en web/vite.config.ts).
    */
-  nombre: 'Mi Itinerario',
+  nombre: 'Itinera',
   /** Frase corta que sigue al nombre en el título de la pestaña y en la instalación. */
-  eslogan: 'Planificador de viaje',
+  eslogan: 'Tu viaje, organizado',
   /** Descripción para buscadores y la instalación de la PWA. */
   descripcion: 'Itinerario, mapa, reservas, pendientes, presupuesto y clima de tu viaje.',
   /**
@@ -35,7 +35,7 @@ export const plantilla = {
    * Garantía de reembolso que ofrece quien vende la app. Si el cobro va por Hotmart, el reembolso dentro de este plazo
    * lo gestiona Hotmart. La app no cobra: el texto de Términos lo aclara. Cambia el número aquí, no en la interfaz.
    */
-  garantiaDias: 7,
+  garantiaDias: 15,
   /**
    * Días de prueba que se anuncian en la portada, el onboarding y el README. La app no cobra ni controla la prueba:
    * debe coincidir con la prueba de tu oferta en Hotmart. Cambia el número aquí, no en la interfaz.

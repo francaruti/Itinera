@@ -112,7 +112,7 @@ export const PREGUNTAS = [
   },
   {
     pregunta: '¿Y si no me convence?',
-    respuesta: 'Tienes garantía de 7 días. Si compras por Hotmart, la solicitud dentro de ese plazo se tramita con Hotmart.',
+    respuesta: `Tienes garantía de ${plantilla.garantiaDias} días. Si compras por Hotmart, la solicitud dentro de ese plazo se tramita con Hotmart.`,
   },
 ];
 

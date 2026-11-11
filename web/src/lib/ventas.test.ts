@@ -89,10 +89,10 @@ describe('portada', () => {
     expect(texto(html)).not.toContain('Demostración');
   });
 
-  it('cada grupo de CTA lleva la garantía de 7 días junto a él', () => {
+  it('cada grupo de CTA lleva la garantía de la plantilla junto a él', () => {
     const t = texto(renderToStaticMarkup(createElement(VentaContenido, { enlace: null })));
-    expect(plantilla.garantiaDias).toBe(7);
-    expect(t.match(/Garantía de 7 días/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
+    const garantia = `Garantía de ${plantilla.garantiaDias} días`;
+    expect(t.match(new RegExp(garantia, 'g'))?.length ?? 0).toBeGreaterThanOrEqual(3);
   });
 
   it('los identificadores de CTA son únicos', () => {
