@@ -149,6 +149,11 @@ export function VentaContenido({
                 <strong>{precioTexto(plantilla.precios.mensual)}</strong>
                 <span> al mes, IVA incluido</span>
               </p>
+              {enlace ? (
+                <a className="btn accent venta-cta venta-comprar" href={enlace} data-evento="elegir-plan-mensual">
+                  Comprar plan mensual
+                </a>
+              ) : null}
             </li>
             <li className="venta-plan venta-plan-destacado">
               <h3>Anual</h3>
@@ -157,6 +162,11 @@ export function VentaContenido({
                 <span> al año, IVA incluido</span>
               </p>
               <p className="venta-plan-nota">Dos meses gratis</p>
+              {enlaceAnual ? (
+                <a className="btn accent venta-cta venta-comprar" href={enlaceAnual} data-evento="elegir-plan-anual">
+                  Comprar plan anual
+                </a>
+              ) : null}
             </li>
           </ul>
           <p className="venta-prueba">Ambos incluyen las mismas funciones y una prueba de {plantilla.pruebaDias} días.</p>
