@@ -21,7 +21,7 @@ export const plantilla = {
    * Nombre de la app: cabecera, pestaña del navegador, instalación, textos legales y web/index.html y el manifiesto
    * de la PWA (ambos se generan desde este archivo en web/vite.config.ts).
    */
-  nombre: 'Itinera',
+  nombre: 'Itinova',
   /** Frase corta que sigue al nombre en el título de la pestaña y en la instalación. */
   eslogan: 'Tu viaje, organizado',
   /** Descripción para buscadores y la instalación de la PWA. */
