@@ -107,6 +107,10 @@ export const PREGUNTAS = [
       'Sí. Quien administra el viaje agrega sus correos. Cada persona crea su contraseña con el código de invitación, y solo entran las que están agregadas.',
   },
   {
+    pregunta: '¿Me llegó un correo de Hotmart pidiendo definir una contraseña?',
+    respuesta: `Sí, Hotmart puede enviarlo al comprar. No es necesario hacerlo: ese correo y el aviso de compra son automáticos de Hotmart. Tu acceso a Itinova llega desde ${plantilla.contactoEmail}, con tu dirección y tu código de acceso. Si tienes dudas, escríbenos a ${plantilla.contactoEmail}.`,
+  },
+  {
     pregunta: '¿Cuánto cuesta?',
     respuesta: 'Hay un plan mensual y uno anual, con los precios de esta página. La forma de pago y el total final aparecen en la página de compra de Hotmart.',
   },
