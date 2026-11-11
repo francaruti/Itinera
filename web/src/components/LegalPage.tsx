@@ -87,7 +87,7 @@ function Terminos() {
       </p>
 
       <h2>Ley aplicable</h2>
-      <p>Estos términos se rigen por el derecho español.</p>
+      <p>Estos términos se rigen por el derecho español, sin perjuicio de los derechos que la normativa imperativa de tu país de residencia te reconozca como consumidor.</p>
 
       <p>Texto modelo: revísalo con asesoría legal de tu país antes de publicar la app.</p>
     </>
