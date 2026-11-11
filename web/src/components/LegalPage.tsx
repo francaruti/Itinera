@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { plantilla } from '../../../shared/plantilla';
+import { precioTexto } from '../lib/ventas';
 
 export type LegalKind = 'privacidad' | 'terminos';
 
@@ -78,12 +79,21 @@ function Terminos() {
         proveedor.
       </p>
 
+      <h2>Prueba gratuita</h2>
+      <p>
+        La prueba dura {plantilla.pruebaDias} días y no tiene costo. Al terminar, se cobra el plan que hayas elegido: {precioTexto(plantilla.precios.mensual)} al mes o{' '}
+        {precioTexto(plantilla.precios.anual)} al año, en dólares. Al empezar la prueba con tus datos de pago, aceptas estas condiciones y sabes que el cobro será
+        automático al terminar la prueba.
+      </p>
+      <p>Puedes cancelar cuando quieras; la cancelación se tramita con Hotmart y evita los cobros siguientes.</p>
+
       <h2>Garantía de {plantilla.garantiaDias} días</h2>
       <p>
         Esta garantía solo aplica si quien vende la app cobra por Hotmart. Entonces, el cobro y el reembolso los gestiona Hotmart: una solicitud dentro de los{' '}
         {plantilla.garantiaDias} días siguientes a la compra se tramita con Hotmart, y esta app no tiene otro proceso de reembolso. Mientras la app no cobre por Hotmart,
         esta sección no aplica.
       </p>
+      <p>Además de esta garantía, conservas los derechos de desistimiento que te reconozca la ley de tu país.</p>
 
       <h2>Responsabilidad</h2>
       <p>
