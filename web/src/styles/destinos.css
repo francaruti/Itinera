@@ -1,0 +1,60 @@
+/* Selector de destino (día y reserva): búsqueda de cualquier lugar y lista de destinos del viaje */
+.destino {
+  display: grid;
+  gap: 8px;
+}
+.destino-actual {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.destino-resultados {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.destino-opcion {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.destino-opcion:hover,
+.destino-opcion:focus-visible {
+  border-color: var(--accent);
+}
+.destino-opcion:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.destino-conocidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.destino-chip {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.destino-chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}

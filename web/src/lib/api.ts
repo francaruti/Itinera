@@ -1,4 +1,4 @@
-import type { AccountUser, GeocodeResult, Op, Snapshot, UserRole, WeatherPayload } from '../../../shared/types';
+import type { AccountUser, CityMeta, GeocodeResult, Op, Snapshot, UserRole, WeatherPayload } from '../../../shared/types';
 
 export interface UsersPayload {
   sharing: boolean;
@@ -60,6 +60,9 @@ export const api = {
   snapshot: () => request<Snapshot>('/api/snapshot'),
   ops: (ops: Op[]) => request<{ rev: number }>('/api/ops', { method: 'POST', body: JSON.stringify({ ops }) }),
   weather: (refresh = false) => request<WeatherPayload>(`/api/weather${refresh ? '?refresh=1' : ''}`),
+  /** Agrega un lugar buscado como destino del viaje. Devuelve su clave y sus datos. */
+  createDestino: (body: { name: string; label?: string; lat: number; lng: number }) =>
+    request<{ key: string; meta: CityMeta; rev: number }>('/api/destinos', { method: 'POST', body: JSON.stringify(body) }),
   geocode: (q: string, near?: string, around?: { lat: number; lng: number }) =>
     request<GeocodeResult[]>(`/api/geocode?q=${encodeURIComponent(q)}${near ? `&near=${near}` : ''}${around ? `&around=${around.lat.toFixed(5)},${around.lng.toFixed(5)}` : ''}`),
   walk: (pts: Array<{ lat: number; lng: number }>, signal?: AbortSignal) =>

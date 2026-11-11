@@ -19,7 +19,7 @@
   --accent-grad-h: linear-gradient(90deg, #5b9dff 0%, #2f6bff 55%, #1e4fe0 100%);
   --accent-glow: color-mix(in srgb, #2f6bff 38%, transparent);
 
-  /* Regiones de destino (ver CITY_META): azul real para el noreste y celeste para el sur */
+  /* Regiones de destino (ver cityMeta): azul real para el noreste y celeste para el sur */
   --ny: #2f6bff;
   --ny-ink: #ffffff;
   --ny-soft: #e8f0ff;

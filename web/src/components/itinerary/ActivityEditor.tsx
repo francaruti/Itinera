@@ -1,7 +1,7 @@
 import { Copy, Loader2, MapPinOff, Navigation, Search, Trash2 } from 'lucide-react';
 import { uid } from '../../lib/uid';
 import { useEffect, useState } from 'react';
-import { ACTIVITY_CATEGORY_LABEL, CITY_META } from '../../../../shared/constants';
+import { ACTIVITY_CATEGORY_LABEL, cityMeta } from '../../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex } from '../../../../shared/time';
 import { ACTIVITY_CATEGORIES, type Activity, type BookingStatus, type GeocodeResult } from '../../../../shared/types';
 import { api } from '../../lib/api';
@@ -55,7 +55,7 @@ export function ActivityEditor({ id, onClose }: { id: string | null; onClose(): 
     setSearchError('');
     try {
       const city = snap?.days.find((d) => d.date === a.dayDate)?.city;
-      const q = city ? `${a.place}, ${CITY_META[city].name}` : a.place;
+      const q = city ? `${a.place}, ${cityMeta(city).name}` : a.place;
       setResults(await api.geocode(q));
     } catch {
       setSearchError('No se pudo buscar. Revisa tu conexión.');
@@ -118,7 +118,7 @@ export function ActivityEditor({ id, onClose }: { id: string | null; onClose(): 
                 >
                   {snap.days.map((d) => (
                     <option key={d.date} value={d.date}>
-                      {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {CITY_META[d.city].name}
+                      {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {cityMeta(d.city).name}
                     </option>
                   ))}
                 </select>

@@ -1,4 +1,4 @@
-import { CITY_META } from '../../shared/constants';
+import { cityMeta } from '../../shared/constants';
 import type { City, CurrentWeather, HourPoint, WeatherDay, WeatherPayload } from '../../shared/types';
 import type { Store } from './store';
 
@@ -49,7 +49,7 @@ interface CityData {
 }
 
 async function fetchCity(city: City, timeZone: string, wanted: Set<string>, signal: AbortSignal): Promise<CityData> {
-  const { lat, lng } = CITY_META[city];
+  const { lat, lng } = cityMeta(city);
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.search = new URLSearchParams({
     latitude: String(lat),

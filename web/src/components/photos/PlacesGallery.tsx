@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Images } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex, formatTime12 } from '../../../../shared/time';
 import type { City, Snapshot } from '../../../../shared/types';
 import { cityClass } from '../../lib/meta';
@@ -59,7 +59,7 @@ export function PlacesGallery({ snap }: { snap: Snapshot }) {
             label="Filtrar por ciudad"
             options={[
               { value: 'all', label: 'Todos' },
-              ...cities.map((c) => ({ value: c, label: CITY_META[c].name })),
+              ...cities.map((c) => ({ value: c, label: cityMeta(c).name })),
             ]}
           />
           <div className="gallery-arrows">
@@ -92,7 +92,7 @@ export function PlacesGallery({ snap }: { snap: Snapshot }) {
           >
             <Photo photo={pl.photo} width={500} alt={pl.photo.name} />
             <span className="place-shade" aria-hidden="true" />
-            <span className={`place-city ${cityClass(pl.photo.city)}`}>{CITY_META[pl.photo.city].short}</span>
+            <span className={`place-city ${cityClass(pl.photo.city)}`}>{cityMeta(pl.photo.city).short}</span>
             <span className="place-info">
               <strong>{pl.photo.name}</strong>
               <small>

@@ -1,7 +1,7 @@
 import { AnimatePresence, Reorder, motion } from 'framer-motion';
 import { ArrowUpDown, CalendarCog, Share2, CalendarOff, CalendarPlus, ChevronDown, CheckCheck, ChevronLeft, ChevronRight, MoreHorizontal, Plane, RotateCcw, Trash2 } from 'lucide-react';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { addDays, formatTime12, longDate, timeToMinutes } from '../../../../shared/time';
 import type { Activity, Snapshot } from '../../../../shared/types';
 import { celebrate } from '../../lib/confetti';
@@ -157,7 +157,7 @@ export function DayView({ snap }: { snap: Snapshot }) {
 
   async function shareDay() {
     const lines = acts.map((a) => `${a.time ? `${formatTime12(a.time)} · ` : '• '}${a.text}${a.place && !a.text.includes(a.place) ? ` (${a.place})` : ''}${a.url && a.booking !== 'none' ? `\n   ${a.url}` : ''}`);
-    const text = `${longDate(date)}${day.title ? ` — ${day.title}` : ''}\n${CITY_META[day.city].name}\n\n${lines.join('\n')}`;
+    const text = `${longDate(date)}${day.title ? ` — ${day.title}` : ''}\n${cityMeta(day.city).name}\n\n${lines.join('\n')}`;
     try {
       if (navigator.share) await navigator.share({ title: `Plan del ${longDate(date)}`, text });
       else if (await copyText(text)) toast('Plan copiado: pégalo donde quieras', 'success');
@@ -202,7 +202,7 @@ export function DayView({ snap }: { snap: Snapshot }) {
               <h2 className="day-date h-stretch">{longDate(date)}</h2>
               <div className="row wrap">
                 <button className={`chip ${cityClass(day.city)} chip-btn`} onClick={() => openDaySheet({ mode: 'edit', date: day.date })} title="Cambiar la ciudad de este día">
-                  {CITY_META[day.city].name}
+                  {cityMeta(day.city).name}
                 </button>
                 {day.travel && (
                   <span className="chip">

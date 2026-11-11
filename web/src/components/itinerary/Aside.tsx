@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, BedDouble, ChevronDown, Plane, Ticket } from 'lucide-react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { formatTime12 } from '../../../../shared/time';
 import type { City, Reservation, Snapshot } from '../../../../shared/types';
 import { tap } from '../../lib/haptics';
@@ -104,9 +104,9 @@ export function Facts({ city }: { city: City }) {
         <ChevronDown size={18} className="chev" />
       </summary>
       <div className="facts-body">
-        <p>Revisa el pronóstico de {CITY_META[city].name} en la pestaña Clima antes de salir.</p>
+        <p>Revisa el pronóstico de {cityMeta(city).name} en la pestaña Clima antes de salir.</p>
         <p>Confirma horarios, precios y requisitos de cada lugar en su sitio oficial: pueden cambiar.</p>
-        <small className="muted">{CITY_META[city].name} es la ciudad del día seleccionado.</small>
+        <small className="muted">{cityMeta(city).name} es la ciudad del día seleccionado.</small>
       </div>
     </details>
   );

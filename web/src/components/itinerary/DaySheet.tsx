@@ -1,9 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { CITY_META } from '../../../../shared/constants';
 import { addDays, longDate } from '../../../../shared/time';
-import { CITIES, type City } from '../../../../shared/types';
+import type { City } from '../../../../shared/types';
 import { op } from '../../lib/ops';
 import { useStore } from '../../store';
+import { DestinoPicker } from '../DestinoPicker';
 import { Sheet } from '../ui/Sheet';
 
 /** Editar la ciudad / tipo del día, o añadir un día nuevo en cualquier fecha. */
@@ -72,17 +72,11 @@ export default function DaySheet() {
             </label>
           )}
 
-          <label className="field">
+          <div className="field">
             <span>Ciudad</span>
-            <select className="select" value={city} onChange={(e) => setCity(e.target.value as City)}>
-              {CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {CITY_META[c].name}
-                </option>
-              ))}
-            </select>
+            <DestinoPicker value={city} onChange={(clave) => setCity(clave as City)} />
             <small className="muted">Define el clima, el mapa y el color del día. Las actividades conservan sus ubicaciones.</small>
-          </label>
+          </div>
 
           {!editing && (
             <label className="field">

@@ -3,7 +3,7 @@ import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import { Car, Footprints, Layers, LocateFixed, Loader2, Maximize2, MapPinOff, MapPinPlus, Minimize2, Minus, Navigation, Plus } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex, formatTime12 } from '../../../shared/time';
 import type { Activity, City } from '../../../shared/types';
 import { MapSearch } from '../components/map/MapSearch';
@@ -89,7 +89,7 @@ export default function MapView() {
       let best = fallback;
       let bestKm = Infinity;
       for (const c of cities) {
-        const km = distanceKm({ lat: a.lat!, lng: a.lng! }, CITY_META[c]);
+        const km = distanceKm({ lat: a.lat!, lng: a.lng! }, cityMeta(c));
         if (km < bestKm) {
           bestKm = km;
           best = c;
@@ -331,7 +331,7 @@ export default function MapView() {
     m.invalidateSize();
     m.stop();
     if (stops.length === 0) {
-      const c = CITY_META[scope === 'day' || scope === 'all' ? day.city : scope];
+      const c = cityMeta(scope === 'day' || scope === 'all' ? day.city : scope);
       m.setView([c.lat, c.lng], 11, { animate: false });
       return;
     }
@@ -522,7 +522,7 @@ export default function MapView() {
 
   const getCenter = useCallback((): LatLng => {
     const c = map.current?.getCenter();
-    return c ? { lat: c.lat, lng: c.lng } : CITY_META[day.city];
+    return c ? { lat: c.lat, lng: c.lng } : cityMeta(day.city);
   }, [day.city]);
 
   const grouped = useMemo(() => {
@@ -541,7 +541,7 @@ export default function MapView() {
           value={scope}
           onChange={(v) => setScope(v)}
           label="Alcance del mapa"
-          options={[{ value: 'day', label: 'Día' }, ...cities.map((c) => ({ value: c as Scope, label: CITY_META[c].name })), { value: 'all', label: 'Todo' }]}
+          options={[{ value: 'day', label: 'Día' }, ...cities.map((c) => ({ value: c as Scope, label: cityMeta(c).name })), { value: 'all', label: 'Todo' }]}
         />
         <button className="btn sm accent" onClick={() => openAddPlace({ date })}>
           <MapPinPlus size={16} /> Añadir lugar
@@ -684,7 +684,7 @@ export default function MapView() {
                 <div key={d} className="stop-group">
                   {scope !== 'day' && (
                     <h3 className="stop-day">
-                      {DOW_ES[dowIndex(d)]} {dayOfMonth(d)} · {CITY_META[list[0].city].name}
+                      {DOW_ES[dowIndex(d)]} {dayOfMonth(d)} · {cityMeta(list[0].city).name}
                     </h3>
                   )}
                   <ol>
@@ -757,7 +757,7 @@ function cityOfSimple(a: Activity, fallback: City, cities: City[]): City {
   let best = fallback;
   let bestKm = Infinity;
   for (const c of cities) {
-    const km = kmBetween({ lat: a.lat!, lng: a.lng! }, CITY_META[c]);
+    const km = kmBetween({ lat: a.lat!, lng: a.lng! }, cityMeta(c));
     if (km < bestKm) {
       bestKm = km;
       best = c;

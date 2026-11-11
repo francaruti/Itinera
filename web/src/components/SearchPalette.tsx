@@ -1,6 +1,6 @@
 import { BedDouble, CalendarDays, CloudSun, Languages, ListChecks, Map as MapIcon, MapPinPlus, Plane, Search, Ticket, Wallet, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex, formatTime12, nowInZone } from '../../../shared/time';
 import { CATEGORY_ICON } from '../lib/meta';
 import { photoForActivity, type PhotoInfo } from '../lib/photos';
@@ -67,7 +67,7 @@ export default function SearchPalette() {
           group: 'Ir a un día',
           icon: CalendarDays,
           title: `${DOW_ES[dowIndex(d.date)]} ${dayOfMonth(d.date)}`,
-          sub: `${CITY_META[d.city].name} · ${d.title}`,
+          sub: `${cityMeta(d.city).name} · ${d.title}`,
           go() {
             selectDate(d.date);
             goTab('itinerario');
@@ -99,7 +99,7 @@ export default function SearchPalette() {
         icon: CATEGORY_ICON[a.category],
         photo: photoForActivity(a),
         title: a.text,
-        sub: `${DOW_ES[dowIndex(a.dayDate)]} ${dayOfMonth(a.dayDate)}${a.time ? ` · ${formatTime12(a.time)}` : ''}${d ? ` · ${CITY_META[d.city].name}` : ''}`,
+        sub: `${DOW_ES[dowIndex(a.dayDate)]} ${dayOfMonth(a.dayDate)}${a.time ? ` · ${formatTime12(a.time)}` : ''}${d ? ` · ${cityMeta(d.city).name}` : ''}`,
         go() {
           selectDate(a.dayDate);
           setTab('itinerario');

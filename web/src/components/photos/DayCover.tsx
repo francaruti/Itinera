@@ -1,4 +1,4 @@
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import type { PhotoInfo } from '../../lib/photos';
 import { Photo, PhotoCredit } from './Photo';
 
@@ -7,12 +7,12 @@ export function DayCover({ photo }: { photo: PhotoInfo }) {
   return (
     <div className="day-cover">
       <div className="day-cover-img">
-        <Photo photo={photo} width={1280} eager zoom alt={`${photo.name}, ${CITY_META[photo.city].name}`} />
+        <Photo photo={photo} width={1280} eager zoom alt={`${photo.name}, ${cityMeta(photo.city).name}`} />
       </div>
       <div className="day-cover-shade" aria-hidden="true" />
       <div className="day-cover-meta">
         <span className="day-cover-name">{photo.name}</span>
-        <span className="day-cover-city">{CITY_META[photo.city].name}</span>
+        <span className="day-cover-city">{cityMeta(photo.city).name}</span>
       </div>
       <PhotoCredit photo={photo} className="on-cover" />
     </div>

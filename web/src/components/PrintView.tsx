@@ -1,4 +1,4 @@
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import { formatTime12, longDate } from '../../../shared/time';
 import { dayActivities } from '../lib/selectors';
 import { useStore } from '../store';
@@ -15,7 +15,7 @@ export default function PrintView() {
       {snap.days.map((d) => (
         <section key={d.date} className="print-day">
           <h2>
-            {longDate(d.date)} · {CITY_META[d.city].name}
+            {longDate(d.date)} · {cityMeta(d.city).name}
           </h2>
           {d.title && <p className="print-title">{d.title}</p>}
           <ul>

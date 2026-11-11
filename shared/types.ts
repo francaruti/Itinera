@@ -1,7 +1,18 @@
 /** Contrato de datos compartido entre el servidor y la web. */
 
+/** Destinos de origen (los de ejemplo). Cualquier otro lugar se agrega desde la búsqueda y se guarda en el viaje. */
 export const CITIES = ['ny', 'orlando', 'miami', 'tampa', 'keywest', 'washington', 'boston', 'philadelphia'] as const;
-export type City = (typeof CITIES)[number];
+/** Clave de un destino: `CITIES` para los de ejemplo, o un identificador creado a partir del nombre (p. ej. `roma-italia`). */
+export type City = string;
+
+/** Datos de un destino: nombre, código corto, coordenadas y color de acento (`ne` azul, `south` celeste). */
+export interface CityMeta {
+  name: string;
+  short: string;
+  lat: number;
+  lng: number;
+  region: 'ne' | 'south';
+}
 
 export const ACTIVITY_CATEGORIES = [
   'sight',
@@ -156,6 +167,8 @@ export interface Snapshot {
   reservations: Reservation[];
   expenses: Expense[];
   attachments: Attachment[];
+  /** Destinos creados por el viaje (los de ejemplo ya vienen en shared/constants.ts). */
+  destinos?: Record<string, CityMeta>;
 }
 
 export type EntityName = 'trip' | 'day' | 'activity' | 'checklist' | 'reservation' | 'expense';
