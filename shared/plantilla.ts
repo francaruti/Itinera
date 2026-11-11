@@ -25,12 +25,12 @@ export const plantilla = {
   /** Frase corta que sigue al nombre en el título de la pestaña y en la instalación. */
   eslogan: 'Tu viaje, organizado',
   /** Descripción para buscadores y la instalación de la PWA. */
-  descripcion: 'Itinerario, mapa, reservas, pendientes, presupuesto y clima de tu viaje.',
+  descripcion: 'Planifica tu viaje día a día: itinerario, reservas, presupuesto y clima, en un solo lugar.',
   /**
    * Correo de contacto que ven las personas en los textos legales.
    * «correo@correo.com» es solo un ejemplo: cámbialo por un correo tuyo antes de publicar.
    */
-  contactoEmail: 'correo@correo.com',
+  contactoEmail: 'itinera@creativas.app',
   /**
    * Garantía de reembolso que ofrece quien vende la app. Si el cobro va por Hotmart, el reembolso dentro de este plazo
    * lo gestiona Hotmart. La app no cobra: el texto de Términos lo aclara. Cambia el número aquí, no en la interfaz.
