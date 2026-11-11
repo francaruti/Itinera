@@ -103,7 +103,7 @@ export function VentaContenido({
           <HeroFirma />
         </section>
 
-        <section className="container venta-seccion" aria-labelledby="venta-beneficios">
+        <section className="container venta-seccion venta-banda" aria-labelledby="venta-beneficios">
           <h2 id="venta-beneficios" className="venta-h2">
             Lo que resuelve la app
           </h2>
@@ -138,7 +138,7 @@ export function VentaContenido({
           <Acciones zona="medio" enlace={enlace} conAcceso={conAcceso} />
         </section>
 
-        <section className="container venta-seccion" aria-labelledby="venta-planes">
+        <section className="container venta-seccion venta-banda" aria-labelledby="venta-planes">
           <h2 id="venta-planes" className="venta-h2">
             Elige tu plan
           </h2>
