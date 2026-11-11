@@ -1,6 +1,7 @@
 @import '@fontsource-variable/archivo/wdth.css';
 @import '@fontsource-variable/montserrat/wght.css';
 @import 'leaflet/dist/leaflet.css';
+@import './destinos.css';
 @import './tokens.css';
 @import './base.css';
 @import './ui.css';

@@ -1,10 +1,41 @@
 import { ZodError } from 'zod';
-import type { Attachment, Op, Snapshot, Trip, UserRole } from '../../shared/types';
+import type { Attachment, CityMeta, Op, Snapshot, Trip, UserRole } from '../../shared/types';
+import { cityMeta, destinoConocido, registrarDestinos } from '../../shared/constants';
 import type { Db, Queryable, Row } from './db';
 import { HttpError } from './errors';
-import { SPECS, TRIP_COLS, importSchema, tripPatch, type Col, type Spec } from './model';
+import { SPECS, TRIP_COLS, destinosMap, importSchema, tripPatch, type Col, type Spec } from './model';
 
 const q = (id: string) => `"${id}"`;
+
+const sinAcentos = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/** Clave base de un lugar: su nombre en minúsculas, sin acentos ni espacios (p. ej. «Roma» → `roma`). */
+function claveBase(name: string): string {
+  return sinAcentos(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'destino';
+}
+
+/** Código corto de tres letras (p. ej. «Roma» → `ROM`). */
+function codigoCorto(name: string): string {
+  return sinAcentos(name).replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 3) || 'DST';
+}
+
+/**
+ * Clave para un lugar nuevo. Si la clave ya existe para el mismo lugar (coordenadas cercanas), la reutiliza;
+ * si la ocupa otro lugar, añade un número (`roma-2`).
+ */
+function claveLibre(name: string, lat: number, lng: number): { clave: string; existente: boolean } {
+  const base = claveBase(name);
+  for (let i = 1; i < 100; i++) {
+    const clave = i === 1 ? base : `${base}-${i}`;
+    if (destinoConocido(clave)) {
+      const m = cityMeta(clave);
+      if (Math.abs(m.lat - lat) < 0.05 && Math.abs(m.lng - lng) < 0.05) return { clave, existente: true };
+      continue;
+    }
+    return { clave, existente: false };
+  }
+  throw new HttpError(422, 'No se pudo crear un identificador para ese lugar');
+}
 
 function toDb(col: Col, value: unknown): unknown {
   if (value === undefined || value === null) return null;
@@ -71,6 +102,8 @@ export interface Store {
   isEmpty(): Promise<boolean>;
   getMeta(key: string): Promise<string | null>;
   setMeta(key: string, value: string): Promise<void>;
+  getDestinos(): Promise<Record<string, CityMeta>>;
+  addDestino(input: { name: string; lat: number; lng: number }): Promise<{ key: string; meta: CityMeta; rev: number }>;
   putAttachment(a: { id: string; reservationId: string; name: string; label?: string; mime: string; data: string }): Promise<number>;
   labelAttachment(id: string, label: string): Promise<number>;
   getAttachment(id: string): Promise<{ name: string; mime: string; data: string } | null>;
@@ -100,6 +133,16 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       `INSERT INTO ${t('meta')}(key, value) VALUES(?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
       [key, value],
     );
+  };
+  /** Destinos agregados por el viaje (se guardan como JSON en la tabla meta; no necesitan tabla propia). */
+  const getDestinos = async (tx: Queryable = db): Promise<Record<string, CityMeta>> => {
+    const raw = await getMeta('destinos', tx);
+    if (!raw) return {};
+    try {
+      return destinosMap.parse(JSON.parse(raw)) as Record<string, CityMeta>;
+    } catch {
+      return {};
+    }
   };
   const rev = async (tx: Queryable = db) => Number((await getMeta('rev', tx)) ?? 0);
   const bump = async (tx: Queryable) => {
@@ -210,6 +253,7 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       size: Number(r.size),
       createdAt: Number(r.created_at),
     }));
+    const destinos = await getDestinos();
     const [tripRow, currentRev, days0, activities, checklist, reservations, expenses] = await Promise.all([
       db.get(`SELECT * FROM ${t('trip')} WHERE id = 1`) as Promise<Row>,
       rev(),
@@ -234,6 +278,7 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       reservations: reservations as unknown as Snapshot['reservations'],
       expenses: expenses as unknown as Snapshot['expenses'],
       attachments,
+      destinos,
     };
   }
 
@@ -242,6 +287,21 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     rev: () => rev(),
     getMeta: (key) => getMeta(key),
     setMeta: (key, value) => setMeta(key, value),
+    getDestinos: () => getDestinos(),
+    async addDestino(input) {
+      const result = await db.transaction(async (tx) => {
+        const { clave, existente } = claveLibre(input.name, input.lat, input.lng);
+        if (!existente) {
+          const meta: CityMeta = { name: input.name, short: codigoCorto(input.name), lat: input.lat, lng: input.lng, region: 'ne' };
+          const actuales = await getDestinos(tx);
+          await setMeta('destinos', JSON.stringify({ ...actuales, [clave]: meta }), tx);
+          registrarDestinos({ [clave]: meta });
+        }
+        return { key: clave, meta: cityMeta(clave), rev: await bump(tx) };
+      });
+      onChange?.(result.rev);
+      return result;
+    },
     async listUsers() {
       return (await db.all(`SELECT * FROM ${t('users')} ORDER BY created_at, email`)).map(toUser);
     },
@@ -315,6 +375,9 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       return next;
     },
     async importSnapshot(input) {
+      // Los destinos del archivo deben estar registrados antes de validar los días que los usan.
+      const destinosArchivo = destinosMap.safeParse((input as { destinos?: unknown } | null)?.destinos);
+      if (destinosArchivo.success && destinosArchivo.data) registrarDestinos(destinosArchivo.data);
       let parsed;
       try {
         parsed = importSchema.parse(input);
@@ -336,6 +399,7 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
         await putMany(tx, SPECS.checklist, parsed.checklist);
         await putMany(tx, SPECS.reservation, parsed.reservations);
         await putMany(tx, SPECS.expense, parsed.expenses);
+        if (parsed.destinos) await setMeta('destinos', JSON.stringify({ ...(await getDestinos(tx)), ...parsed.destinos }), tx);
         return bump(tx);
       });
       onChange?.(next);

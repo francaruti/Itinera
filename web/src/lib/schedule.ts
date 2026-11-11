@@ -1,7 +1,7 @@
 import { dowIndex, formatTime12, normalizeTime, timeToMinutes } from '../../../shared/time';
 import type { CatalogPlace, Hours } from '../../../shared/catalog';
 import type { Activity, ActivityCategory, Snapshot } from '../../../shared/types';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 
 /* ------------------------------ Horarios ------------------------------ */
 
@@ -159,11 +159,11 @@ const mealOf = (time: string): MealSlot => {
 const FOOD_SLOTS = new Set(['breakfast', 'lunch', 'dinner', 'snack', 'dessert']);
 
 /** Punto de referencia: la actividad anterior con ubicación (así "cerca" significa cerca de donde vienes). */
-function anchorFor(a: Activity, ordered: Activity[], city: keyof typeof CITY_META) {
+function anchorFor(a: Activity, ordered: Activity[], city: string) {
   const i = ordered.findIndex((x) => x.id === a.id);
   for (let k = i - 1; k >= 0; k--) if (ordered[k].lat != null && ordered[k].lng != null) return { lat: ordered[k].lat!, lng: ordered[k].lng! };
   if (a.lat != null && a.lng != null) return { lat: a.lat, lng: a.lng };
-  return { lat: CITY_META[city].lat, lng: CITY_META[city].lng };
+  return { lat: cityMeta(city).lat, lng: cityMeta(city).lng };
 }
 
 /** Las 3 mejores alternativas para una actividad: mismo tipo de plan, abiertas a esa hora, cercanas y bien calificadas. */

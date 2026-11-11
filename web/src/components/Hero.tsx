@@ -3,7 +3,7 @@ import { Calendar, MapPin, PartyPopper, Plane, Sparkles } from 'lucide-react';
 import { PLANE_PATH } from './Logo';
 import { HeroPhotos } from './photos/HeroPhotos';
 import { useMemo, type MouseEvent } from 'react';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import {
   DOW_ES,
   MONTH_ES,
@@ -113,7 +113,7 @@ function Countdown({ snap }: { snap: Snapshot }) {
         <Digit value={s} label="seg" />
       </div>
       <p className="hero-card-foot">
-        <Plane size={15} /> Empieza en {first ? CITY_META[first.city].name : 'tu destino'}
+        <Plane size={15} /> Empieza en {first ? cityMeta(first.city).name : 'tu destino'}
         {firstTimed ? ` · primer plan a las ${formatTime12(firstTimed.time)}` : ''}
       </p>
     </div>
@@ -134,7 +134,7 @@ function Today({ snap, today, time, dayNumber }: { snap: Snapshot; today: string
       <div className="hero-card-title">
         <MapPin size={16} /> Hoy · día {dayNumber} de {snap.days.length}
       </div>
-      <p className="hero-card-big">{CITY_META[day.city].name}</p>
+      <p className="hero-card-big">{cityMeta(day.city).name}</p>
       <p className="hero-card-line">{day.title}</p>
       {nextAct ? (
         <p className="hero-card-foot">
@@ -183,7 +183,7 @@ export function Hero({ snap }: { snap: Snapshot }) {
   const cityNames = useMemo(() => {
     const first = snap.days[0]?.city ?? 'ny';
     const mid = snap.days.find((d) => d.city !== first)?.city ?? first;
-    return [CITY_META[first].short, CITY_META[mid].short, CITY_META[snap.days[snap.days.length - 1]?.city ?? first].short] as [string, string, string];
+    return [cityMeta(first).short, cityMeta(mid).short, cityMeta(snap.days[snap.days.length - 1]?.city ?? first).short] as [string, string, string];
   }, [snap.days]);
 
   const mx = useMotionValue(0);

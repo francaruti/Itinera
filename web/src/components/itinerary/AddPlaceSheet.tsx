@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Check, Loader2, MapPin, MapPinOff, Navigation, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { ACTIVITY_CATEGORY_LABEL, CITY_META } from '../../../../shared/constants';
+import { ACTIVITY_CATEGORY_LABEL, cityMeta } from '../../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex } from '../../../../shared/time';
 import { ACTIVITY_CATEGORIES, type ActivityCategory, type City, type GeocodeResult } from '../../../../shared/types';
 import { api } from '../../lib/api';
@@ -99,7 +99,7 @@ export default function AddPlaceSheet() {
   const preview = useMemo(() => (picked ? photoForActivity({ place: name, text: name }) : null), [picked, name]);
   const cityName = (() => {
     const c = dayCity(date);
-    return c ? CITY_META[c].name : '';
+    return c ? cityMeta(c).name : '';
   })();
 
   function add(another: boolean) {
@@ -176,7 +176,7 @@ export default function AddPlaceSheet() {
                 <select className="select" value={date} onChange={(e) => setDate(e.target.value)}>
                   {snap.days.map((d) => (
                     <option key={d.date} value={d.date}>
-                      {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {CITY_META[d.city].name}
+                      {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {cityMeta(d.city).name}
                     </option>
                   ))}
                 </select>
@@ -257,7 +257,7 @@ export default function AddPlaceSheet() {
                   <select className="select" value={date} onChange={(e) => setDate(e.target.value)}>
                     {snap.days.map((d) => (
                       <option key={d.date} value={d.date}>
-                        {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {CITY_META[d.city].name}
+                        {DOW_ES[dowIndex(d.date)].slice(0, 3)} {dayOfMonth(d.date)} · {cityMeta(d.city).name}
                       </option>
                     ))}
                   </select>

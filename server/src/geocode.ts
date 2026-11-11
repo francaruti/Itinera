@@ -1,4 +1,4 @@
-import { CITY_META } from '../../shared/constants';
+import { cityMeta } from '../../shared/constants';
 import type { City, GeocodeResult } from '../../shared/types';
 
 const cache = new Map<string, GeocodeResult[]>();
@@ -49,7 +49,7 @@ export async function geocode(query: string, near?: City, around?: { lat: number
     params.bounded = '1';
     params.limit = '12';
   } else if (near) {
-    const { lat, lng } = CITY_META[near];
+    const { lat, lng } = cityMeta(near);
     const d = 0.5;
     // Preferencia suave (bounded=0): los resultados cercanos suben, pero no se excluyen los demás.
     params.viewbox = `${lng - d},${lat + d},${lng + d},${lat - d}`;

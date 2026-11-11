@@ -1,4 +1,4 @@
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import { plantilla } from '../../../shared/plantilla';
 import { distanceKm } from './schedule';
 
@@ -153,8 +153,8 @@ export const PARADAS_FIRMA = ['orlando', 'miami', 'keywest'] as const;
 
 export function tramosFirma(): Array<{ desde: string; hasta: string; km: number }> {
   return PARADAS_FIRMA.slice(0, -1).map((clave, i) => {
-    const desde = CITY_META[clave];
-    const hasta = CITY_META[PARADAS_FIRMA[i + 1]];
+    const desde = cityMeta(clave);
+    const hasta = cityMeta(PARADAS_FIRMA[i + 1]);
     return { desde: desde.name, hasta: hasta.name, km: Math.round(distanceKm(desde, hasta)) };
   });
 }

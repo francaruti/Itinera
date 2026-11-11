@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { CalendarClock, Droplets, Flame, Gauge, RefreshCw, Shirt, Sunrise, Sunset, SunMedium, ThermometerSun, ThumbsUp, Umbrella, Wind, CloudOff } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import { DOW_ES, addDays, dayOfMonth, dowIndex, formatTime12, longDate, timeToMinutes } from '../../../shared/time';
 import type { HourPoint, WeatherDay } from '../../../shared/types';
 import { HourlyChart, type Metric } from '../components/weather/HourlyChart';
@@ -263,7 +263,7 @@ export default function WeatherView() {
             <section className="wx-hero" data-kind={kind} aria-label={`Clima del ${longDate(day.date)}`}>
               <div className="wx-hero-main">
                 <div className="wx-hero-top">
-                  <span className="chip glass">{CITY_META[day.city].name}</span>
+                  <span className="chip glass">{cityMeta(day.city).name}</span>
                   <span className="wx-date">{longDate(day.date)}</span>
                   {isToday && <span className="chip now">Hoy</span>}
                 </div>
@@ -379,7 +379,7 @@ export default function WeatherView() {
 
             <div className="wx-two">
               <SunCard day={daily} time={time} isToday={isToday} />
-              <PlanForecast date={day.date} hours={hours} daily={daily} u={units} city={CITY_META[day.city].name} />
+              <PlanForecast date={day.date} hours={hours} daily={daily} u={units} city={cityMeta(day.city).name} />
             </div>
           </motion.div>
         </AnimatePresence>
@@ -402,7 +402,7 @@ export default function WeatherView() {
                   <button className={d.date === day.date ? 'on' : ''} onClick={() => { selectDate(d.date); window.scrollTo({ top: 0, behavior: 'smooth' }); }} disabled={!w}>
                     <span className="wd-day">
                       <strong>{d.date === today ? 'Hoy' : `${DOW_ES[dowIndex(d.date)].slice(0, 3)} ${dayOfMonth(d.date)}`}</strong>
-                      <small className={`city ${cityClass(d.city)}`}>{CITY_META[d.city].short}</small>
+                      <small className={`city ${cityClass(d.city)}`}>{cityMeta(d.city).short}</small>
                     </span>
                     {w ? <WeatherIcon code={w.code} size={28} title={labelOf(w.code)} /> : <span />}
                     <span className="wd-rain tnum">{w && (w.rain ?? 0) >= 15 ? <><Droplets size={11} /> {w.rain}%</> : ''}</span>

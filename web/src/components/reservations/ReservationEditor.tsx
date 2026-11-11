@@ -1,9 +1,10 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { CITY_META, RESERVATION_KIND_LABEL } from '../../../../shared/constants';
+import { RESERVATION_KIND_LABEL } from '../../../../shared/constants';
 import { RESERVATION_KINDS, type Reservation, type ReservationStatus } from '../../../../shared/types';
 import { op } from '../../lib/ops';
 import { useStore } from '../../store';
+import { DestinoPicker } from '../DestinoPicker';
 import { Seg } from '../ui/Seg';
 import { AttachmentStrip } from './Attachments';
 import { Sheet } from '../ui/Sheet';
@@ -121,16 +122,10 @@ export function ReservationEditor({ id, onClose }: { id: string | null; onClose(
             </div>
 
             <div className="grid-2">
-              <label className="field">
+              <div className="field">
                 <span>Ciudad</span>
-                <select className="select" value={r.city} onChange={(e) => patch({ city: e.target.value as Reservation['city'] })}>
-                  {Object.entries(CITY_META).map(([k, v]) => (
-                    <option key={k} value={k}>
-                      {v.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                <DestinoPicker value={r.city} onChange={(clave) => patch({ city: clave as Reservation['city'] })} />
+              </div>
               <label className="field">
                 <span>Dirección</span>
                 <input className="input" value={r.address} maxLength={300} onChange={(e) => patch({ address: e.target.value })} />

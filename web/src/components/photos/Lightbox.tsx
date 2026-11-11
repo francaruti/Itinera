@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, X } from 'lucide-react';
 import { useEffect } from 'react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { PHOTOS, photoUrl } from '../../lib/photos';
 import { useStore } from '../../store';
 
@@ -49,7 +49,7 @@ export default function Lightbox() {
               <div>
                 <strong className="h-stretch">{p.name}</strong>
                 <small>
-                  {CITY_META[p.city].name} · Foto: {p.author} ·{' '}
+                  {cityMeta(p.city).name} · Foto: {p.author} ·{' '}
                   <a href={p.licenseUrl || p.page} target="_blank" rel="noreferrer">
                     {p.license}
                   </a>

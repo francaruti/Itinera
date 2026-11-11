@@ -1,6 +1,6 @@
 import { BadgeCheck, Clock, ExternalLink, Footprints, Lightbulb, MapPin, Navigation, Pencil, Replace, Star, Ticket, Timer, Wallet } from 'lucide-react';
 import { useMemo } from 'react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { formatTime12, longDate } from '../../../../shared/time';
 import { directionsUrl, mapsSearchUrl, money } from '../../lib/format';
 import { CATEGORY_ICON } from '../../lib/meta';
@@ -68,7 +68,7 @@ export default function PlaceSheet({ onEdit }: { onEdit(id: string): void }) {
               <small className="muted">
                 {longDate(a.dayDate)}
                 {a.time ? ` · ${formatTime12(a.time)}` : ''}
-                {day ? ` · ${CITY_META[day.city].name}` : ''}
+                {day ? ` · ${cityMeta(day.city).name}` : ''}
               </small>
               <h2 className="ps-title">{a.text}</h2>
               {(a.place || place?.area) && (

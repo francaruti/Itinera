@@ -2,7 +2,6 @@ import { z } from 'zod';
 import {
   ACTIVITY_CATEGORIES,
   BOOKING_STATUSES,
-  CITIES,
   CHECKLIST_LISTS,
   CURRENCIES,
   EXPENSE_CATEGORIES,
@@ -10,11 +9,34 @@ import {
   RESERVATION_STATUSES,
   type EntityName,
 } from '../../shared/types';
+import { destinoConocido } from '../../shared/constants';
 import { normalizeTime } from '../../shared/time';
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida (YYYY-MM-DD)');
 const isoLocalDateTime = z.string().regex(/^(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?)?$/, 'Fecha/hora inválida');
-const city = z.enum(CITIES);
+/** Un destino debe existir en el registro (los de ejemplo o los que el viaje ya agregó con la búsqueda). */
+const city = z
+  .string()
+  .min(1)
+  .max(64)
+  .refine((k) => destinoConocido(k), 'Destino desconocido: búscalo para agregarlo');
+
+/** Un destino guardado: nombre, código corto, coordenadas y color de acento. */
+export const cityMetaSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  short: z.string().trim().min(1).max(8),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  region: z.enum(['ne', 'south']),
+});
+export const destinosMap = z.record(z.string().min(1).max(64), cityMetaSchema);
+/** Cuerpo para agregar un destino desde la búsqueda de lugares. */
+export const destinoBody = z.object({
+  name: z.string().trim().min(1).max(80),
+  label: z.string().max(200).default(''),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+});
 const httpUrl = z
   .string()
   .max(500)
@@ -218,4 +240,6 @@ export const importSchema = z.object({
   checklist: z.array(SPECS.checklist.full.extend({ id: z.string().min(1).max(64) })).max(1000),
   reservations: z.array(SPECS.reservation.full.extend({ id: z.string().min(1).max(64) })).max(1000),
   expenses: z.array(SPECS.expense.full.extend({ id: z.string().min(1).max(64) })).max(5000),
+  /** Destinos agregados por el viaje (se registran antes de validar los días que los usan). */
+  destinos: destinosMap.optional(),
 });

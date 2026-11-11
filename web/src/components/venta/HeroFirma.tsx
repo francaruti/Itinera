@@ -4,7 +4,7 @@ import { APP_NAME } from '../../../../shared/constants';
 /**
  * Visual del héroe: mapa estilizado con la ruta punteada y sus kilómetros, la captura real del itinerario
  * dentro de un dispositivo que se funde abajo, y una tarjeta con el dato del día de esa captura.
- * Coordenadas en un lienzo de 400 × 540 (proporción fija). Los kilómetros salen de las coordenadas de CITY_META.
+ * Coordenadas en un lienzo de 400 × 540 (proporción fija). Los kilómetros salen de las coordenadas de cityMeta.
  */
 export function HeroFirma() {
   const [tramoA, tramoB] = tramosFirma();

@@ -144,6 +144,33 @@ describe('API de viaje', () => {
       .expect(200);
   });
 
+  it('agrega un lugar buscado como destino (sin repetirlo) y lo usa en un día', async () => {
+    const res = await request(ctx.app)
+      .post('/api/destinos')
+      .send({ name: 'Roma', label: 'Roma, Lazio, Italia', lat: 41.9028, lng: 12.4964 })
+      .expect(200);
+    const key = res.body.key as string;
+    expect(key).toBe('roma');
+    expect(res.body.meta).toMatchObject({ name: 'Roma', short: 'ROM', region: 'ne' });
+    // el mismo lugar reutiliza su clave
+    const repetido = await request(ctx.app).post('/api/destinos').send({ name: 'Roma', lat: 41.9028, lng: 12.4964 }).expect(200);
+    expect(repetido.body.key).toBe(key);
+    // otro lugar con el mismo nombre recibe otra clave
+    const otro = await request(ctx.app).post('/api/destinos').send({ name: 'Roma', lat: 34.2, lng: -85.2 }).expect(200);
+    expect(otro.body.key).toBe('roma-2');
+    // el día acepta el destino nuevo y la foto del viaje lo trae
+    const day = addDays(DAY[DAY.length - 1], 5);
+    await request(ctx.app).put(`/api/days/${day}`).send({ city: key, title: 'Coliseo' }).expect(200);
+    const snap = (await request(ctx.app).get('/api/snapshot')).body as Snapshot;
+    expect(snap.days.find((d) => d.date === day)?.city).toBe(key);
+    expect(snap.destinos?.[key]?.name).toBe('Roma');
+  });
+
+  it('rechaza un destino inventado y coordenadas fuera de rango', async () => {
+    await request(ctx.app).post('/api/destinos').send({ name: 'X', lat: 200, lng: 0 }).expect(422);
+    await request(ctx.app).put(`/api/days/${addDays(DAY[DAY.length - 1], 6)}`).send({ city: 'nunca-existio' }).expect(422);
+  });
+
   it('valida el buscador de lugares sin llamar a la red', async () => {
     await request(ctx.app).get('/api/geocode?q=ab').expect(422);
     await request(ctx.app).get(`/api/geocode?q=${'x'.repeat(130)}`).expect(422);

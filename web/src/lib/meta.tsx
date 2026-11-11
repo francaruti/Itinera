@@ -18,7 +18,7 @@ import {
   Utensils,
   type LucideIcon,
 } from 'lucide-react';
-import { CITY_META } from '../../../shared/constants';
+import { cityMeta } from '../../../shared/constants';
 import type { ActivityCategory, City } from '../../../shared/types';
 
 export const CATEGORY_ICON: Record<ActivityCategory, LucideIcon> = {
@@ -48,4 +48,4 @@ export function weatherInfo(code: number): { icon: LucideIcon; label: string } {
 }
 
 /** Región noreste → azul real (`ny`); sur / Florida → celeste (`fl`). */
-export const cityClass = (c: City) => (CITY_META[c]?.region === 'ne' ? 'ny' : 'fl');
+export const cityClass = (c: City) => (cityMeta(c)?.region === 'ne' ? 'ny' : 'fl');

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { registrarDestinos } from '../../shared/constants';
 import { nowInZone } from '../../shared/time';
 import type { AccountUser, Attachment, Op, Snapshot, WeatherPayload } from '../../shared/types';
 import { blobToBase64, cacheAttachment, prepareFile, uncacheAttachment, warmAttachments } from './lib/files';
@@ -45,7 +46,12 @@ function write(key: string, value: unknown) {
 }
 
 /** Instantáneas guardadas por versiones anteriores no traen adjuntos. */
-const norm = (s: Snapshot | null): Snapshot | null => (s ? { ...s, attachments: s.attachments ?? [] } : s);
+/** Normaliza la foto del viaje y registra sus destinos (también al leerla de la copia guardada sin conexión). */
+const norm = (s: Snapshot | null): Snapshot | null => {
+  if (!s) return s;
+  registrarDestinos(s.destinos);
+  return { ...s, attachments: s.attachments ?? [] };
+};
 
 // Estado de sincronización fuera de React: la verdad del servidor y las operaciones pendientes.
 let base: Snapshot | null = null;

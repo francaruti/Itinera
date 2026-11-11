@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Plane } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
-import { CITY_META } from '../../../../shared/constants';
+import { cityMeta } from '../../../../shared/constants';
 import { DOW_ES, dayOfMonth, dowIndex } from '../../../../shared/time';
 import type { Snapshot } from '../../../../shared/types';
 import { cityClass } from '../../lib/meta';
@@ -36,7 +36,7 @@ export function RouteStrip({ snap }: { snap: Snapshot }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + l.start * 0.03 }}
           >
-            {l.n < 2 ? CITY_META[l.city].short : CITY_META[l.city].name}
+            {l.n < 2 ? cityMeta(l.city).short : cityMeta(l.city).name}
           </motion.div>
         ))}
         <div className="bar" aria-hidden="true">

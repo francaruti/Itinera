@@ -12,9 +12,9 @@ import type { Db } from './db';
 import { HttpError } from './errors';
 import { geocode } from './geocode';
 import { routes as computeRoutes, walk } from './route';
-import { CITIES } from '../../shared/types';
+import { destinoConocido, registrarDestinos } from '../../shared/constants';
 import { buildIcs } from './ics';
-import { opsBody } from './model';
+import { destinoBody, opsBody } from './model';
 import { rateLimit } from './ratelimit';
 import { buildSeed } from './seed';
 import { createHub } from './sse';
@@ -121,6 +121,25 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
 
   // --- Protegidas ---------------------------------------------------------
   app.use('/api', auth.guard);
+
+  // Antes de cada petición, el registro de destinos se carga desde el viaje (así la validación y el clima los conocen).
+  app.use('/api', async (_req, _res, next) => {
+    try {
+      registrarDestinos(await store.getDestinos());
+      next();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Agrega un lugar buscado (Nominatim) como destino del viaje. Devuelve su clave para usarla en los días.
+  app.post('/api/destinos', rateLimit(60, 60_000), async (req, res) => {
+    const parsed = destinoBody.safeParse(req.body ?? {});
+    if (!parsed.success) {
+      throw new HttpError(422, 'Datos del destino inválidos', parsed.error.issues.map((i) => ({ path: i.path.join('.'), message: i.message })));
+    }
+    res.json(await store.addDestino(parsed.data));
+  });
 
   // Cuenta propia y administración de accesos (compartir el viaje con otras personas)
   app.post('/api/auth/password', rateLimit(10, 60_000), auth.changePassword);
@@ -245,7 +264,7 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
     if (q.length < 3) throw new HttpError(422, 'Escribe al menos 3 letras');
     if (q.length > 120) throw new HttpError(422, 'La búsqueda es demasiado larga');
     const nearRaw = String(req.query.near ?? '');
-    const near = (CITIES as readonly string[]).includes(nearRaw) ? (nearRaw as City) : undefined;
+    const near: City | undefined = destinoConocido(nearRaw) ? nearRaw : undefined;
     try {
       const [aLat, aLng] = String(req.query.around ?? '').split(',').map(Number);
       const around = Number.isFinite(aLat) && Number.isFinite(aLng) && Math.abs(aLat) <= 90 && Math.abs(aLng) <= 180 ? { lat: aLat, lng: aLng } : undefined;
