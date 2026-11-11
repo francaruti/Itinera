@@ -45,7 +45,11 @@ export const plantilla = {
    * Enlace de compra en Hotmart (https://…). Vacío = la página de venta no muestra el botón de compra
    * y muestra la nota de demostración. Con enlace, el botón aparece con data-evento="inicio-compra".
    */
-  enlaceCompra: '' as string,
+  enlaceCompra: 'https://pay.hotmart.com/U108447081L?off=w0vifeaz' as string,
+  /**
+   * Enlace de compra del plan anual en Hotmart (https://…). Vacío = no aparece el botón de plan anual.
+   */
+  enlaceCompraAnual: 'https://pay.hotmart.com/U108447081L?off=k2cflvye' as string,
   /**
    * Precios mostrados y cobrados en pesos chilenos (CLP) a través de Hotmart. El anual equivale a 10 mensualidades y la portada
    * lo presenta como «dos meses gratis». Precios sugeridos: confirma tu oferta en Hotmart antes de vender. Cambia las cifras aquí

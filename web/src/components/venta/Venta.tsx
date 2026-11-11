@@ -55,14 +55,30 @@ function useFuentesListas(): boolean {
 }
 
 /** Portada pública: se muestra sin sesión en la ruta principal (#/). */
-export function Venta({ enlace = enlaceCompra(), conAcceso = true }: { enlace?: string | null; conAcceso?: boolean }) {
+export function Venta({
+  enlace = enlaceCompra(),
+  enlaceAnual = enlaceCompra(plantilla.enlaceCompraAnual),
+  conAcceso = true,
+}: {
+  enlace?: string | null;
+  enlaceAnual?: string | null;
+  conAcceso?: boolean;
+}) {
   const listas = useFuentesListas();
   if (!listas) return <div className="venta" aria-busy="true" aria-label="Cargando" />;
-  return <VentaContenido enlace={enlace} conAcceso={conAcceso} />;
+  return <VentaContenido enlace={enlace} enlaceAnual={enlaceAnual} conAcceso={conAcceso} />;
 }
 
 /** Contenido de la portada sin esperar a las fuentes (para pruebas de marcado). */
-export function VentaContenido({ enlace = enlaceCompra(), conAcceso = true }: { enlace?: string | null; conAcceso?: boolean }) {
+export function VentaContenido({
+  enlace = enlaceCompra(),
+  enlaceAnual = null,
+  conAcceso = true,
+}: {
+  enlace?: string | null;
+  enlaceAnual?: string | null;
+  conAcceso?: boolean;
+}) {
   return (
     <div className="venta">
       <Ambient />
@@ -170,10 +186,19 @@ export function VentaContenido({ enlace = enlaceCompra(), conAcceso = true }: { 
             Tu próximo viaje, con todo a la vista
           </h2>
           <Acciones zona="final" enlace={enlace} conAcceso={conAcceso} />
-          {enlace ? (
-            <a id="cta-comprar" className="btn ghost venta-cta venta-comprar" href={enlace} data-evento="inicio-compra">
-              Comprar en Hotmart
-            </a>
+          {enlace || enlaceAnual ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+              {enlace ? (
+                <a id="cta-comprar" className="btn ghost venta-cta venta-comprar" href={enlace} data-evento="inicio-compra">
+                  Comprar plan mensual
+                </a>
+              ) : null}
+              {enlaceAnual ? (
+                <a id="cta-comprar-anual" className="btn ghost venta-cta venta-comprar" href={enlaceAnual} data-evento="inicio-compra">
+                  Comprar plan anual
+                </a>
+              ) : null}
+            </div>
           ) : (
             <p className="venta-demo" role="note" data-captura="oculto">
               Demostración: no se cobra nada.

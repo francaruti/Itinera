@@ -54,7 +54,7 @@ No hay cobros conectados. Esta plantilla no cobra ni procesa pagos, y así lo di
 **Si vendes la app por Hotmart:**
 
 - **Cobro y reembolso:** los gestiona Hotmart. La app no recibe pagos ni reembolsos.
-- **Enlace de compra:** pon el enlace `https://` de tu oferta en `enlaceCompra` de `shared/plantilla.ts`. Con enlace, la portada muestra «Comprar en Hotmart». Vacío, no aparece ese botón y la portada muestra «Demostración: no se cobra nada».
+- **Enlaces de compra:** pon el enlace `https://` del plan mensual en `enlaceCompra` y el del plan anual en `enlaceCompraAnual` de `shared/plantilla.ts`. Con cada enlace, la portada muestra su botón («Comprar plan mensual» y «Comprar plan anual»). Vacío, no aparece ese botón y la portada muestra «Demostración: no se cobra nada».
 - **Garantía de 7 días:** el valor está en `garantiaDias` de `shared/plantilla.ts` (7). Úsalo igual en tu oferta de Hotmart. Una solicitud dentro de ese plazo se tramita con Hotmart; la app no tiene otro proceso de reembolso.
 - **Prueba de 7 días:** el valor está en `pruebaDias` de `shared/plantilla.ts` (7). La portada y el onboarding lo anuncian. Configúrala igual en tu oferta de Hotmart: la app no cobra ni controla la prueba.
 - **Términos:** la sección «Garantía de 7 días» de `web/src/components/LegalPage.tsx` aplica solo si cobras por Hotmart. Si cobras, déjala; si no, bórrala.
@@ -71,7 +71,7 @@ No hay IA conectada. Si la añades (por ejemplo para sugerir planes), hazlo solo
 
 La app no carga el píxel de Meta ni otros scripts de terceros. Su portada pública (`#/`, sin sesión) es la página de venta: ahí van los eventos, con los atributos que ya tienen sus CTA. Quien ya tiene acceso entra por `#/acceso`.
 
-1. En la portada, «Empezar mi viaje» tiene `data-evento="inicio-compra"` y un `id` estable (`cta-empezar-arriba`, `cta-empezar-medio` y `cta-empezar-final`): la misma acción en tres lugares. El botón «Comprar en Hotmart» (`cta-comprar`) aparece solo con `enlaceCompra` y lleva el mismo atributo. «Ya tengo acceso» usa `data-evento="acceso-existente"`.
+1. En la portada, «Empezar mi viaje» tiene `data-evento="inicio-compra"` y un `id` estable (`cta-empezar-arriba`, `cta-empezar-medio` y `cta-empezar-final`): la misma acción en tres lugares. Los botones «Comprar plan mensual» (`cta-comprar`) y «Comprar plan anual» (`cta-comprar-anual`) aparecen solo con su enlace y llevan el mismo atributo. «Ya tengo acceso» usa `data-evento="acceso-existente"`.
 2. Pega el píxel de Meta solo en esa página, nunca en la app.
 3. `ViewContent`: se envía al cargar la página de venta.
 4. `InitiateCheckout`: se envía al hacer clic en los elementos con `data-evento="inicio-compra"`.
