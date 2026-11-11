@@ -84,6 +84,34 @@
   font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
 }
 
+/* Bloque del título en azul de marca: texto blanco y botones invertidos para que se lean sobre el fondo */
+.venta-copy {
+  padding: 28px 22px;
+  border-radius: var(--radius-l);
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-strong));
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+.venta-copy .venta-titulo {
+  background: none;
+  color: #fff;
+}
+.venta-copy .venta-sub,
+.venta-copy .venta-garantia {
+  color: rgba(255, 255, 255, 0.9);
+}
+.venta-copy .venta-garantia strong {
+  color: #fff;
+}
+.venta-copy .btn.accent {
+  background: #fff;
+  color: var(--accent-strong);
+}
+.venta-copy .btn.ghost {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
 /* Acciones: CTA principal, secundario y garantía junto a cada grupo */
 .venta-acciones {
   display: grid;
@@ -342,9 +370,25 @@
   box-shadow: var(--shadow);
 }
 .venta-plan-destacado {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent-strong));
+  color: #fff;
   box-shadow: var(--shadow-l);
+}
+.venta-plan-destacado h3,
+.venta-plan-destacado .venta-precio strong {
+  color: #fff;
+}
+.venta-plan-destacado .venta-precio {
+  color: rgba(255, 255, 255, 0.85);
+}
+.venta-plan-destacado .venta-plan-nota {
+  background: #fff;
+  color: var(--accent-strong);
+}
+.venta-plan-destacado .venta-comprar {
+  background: #fff;
+  color: var(--accent-strong);
 }
 .venta-plan h3 {
   margin: 0 0 6px;
