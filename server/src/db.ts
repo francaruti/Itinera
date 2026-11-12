@@ -123,6 +123,14 @@ const SQLITE_MIGRATIONS: string[] = [
   /* v5: número de vuelo en las reservas */ `
   ALTER TABLE reservations ADD COLUMN flight_no TEXT NOT NULL DEFAULT '';
   `,
+  /* v6: cada registro indica a qué viaje pertenece (por ahora, todo es del viaje 1) */ `
+  ALTER TABLE days ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE activities ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE checklist ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE reservations ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE expenses ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE attachments ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  `,
 ];
 
 function openSqlite(path: string): Db {

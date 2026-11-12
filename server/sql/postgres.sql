@@ -108,6 +108,14 @@ ALTER TABLE viaje.attachments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE viaje.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE viaje.meta ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON SCHEMA viaje FROM PUBLIC, anon, authenticated;
+-- Viajes múltiples (fase 1): cada registro indica su viaje. Por ahora todo es del viaje 1.
+ALTER TABLE viaje.days ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE viaje.activities ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE viaje.checklist ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE viaje.reservations ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE viaje.expenses ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE viaje.attachments ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
+
 REVOKE ALL ON ALL TABLES IN SCHEMA viaje FROM PUBLIC, anon, authenticated;
 
 -- Rol de la app (se crea aparte con su contraseña): acceso solo a este esquema, con una política por tabla.
