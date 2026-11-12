@@ -85,16 +85,21 @@ export interface UserRow {
   passwordHash: string;
   createdAt: number;
   lastLogin: number | null;
+  /** Viaje al que pertenece la cuenta: solo ve y administra ese viaje. */
+  tripId: number;
 }
 
 /** Viaje que se usa cuando no se indica otro (mientras la app tenga un solo viaje). */
 export const VIAJE_PREDETERMINADO = 1;
 
 export interface Store {
-  listUsers(): Promise<UserRow[]>;
+  /** Sin `viaje`, todas las cuentas; con `viaje`, solo las de ese viaje. */
+  listUsers(viaje?: number): Promise<UserRow[]>;
   getUser(id: string): Promise<UserRow | null>;
   findUserByEmail(email: string): Promise<UserRow | null>;
-  createUser(u: { id: string; email: string; role: UserRole }): Promise<void>;
+  createUser(u: { id: string; email: string; role: UserRole; tripId: number }): Promise<void>;
+  /** Crea un viaje vacío con el siguiente número libre y lo devuelve. */
+  createTrip(): Promise<number>;
   updateUser(id: string, patch: { role?: UserRole; passwordHash?: string; lastLogin?: number }): Promise<void>;
   deleteUser(id: string): Promise<void>;
 
@@ -120,6 +125,7 @@ const toUser = (r: Row): UserRow => ({
   passwordHash: String(r.password_hash ?? ''),
   createdAt: Number(r.created_at),
   lastLogin: r.last_login == null ? null : Number(r.last_login),
+  tripId: Number(r.trip_id ?? VIAJE_PREDETERMINADO),
 });
 
 export function createStore(db: Db, onChange?: (rev: number) => void): Store {
@@ -309,8 +315,9 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       onChange?.(result.rev);
       return result;
     },
-    async listUsers() {
-      return (await db.all(`SELECT * FROM ${t('users')} ORDER BY created_at, email`)).map(toUser);
+    async listUsers(viaje) {
+      if (viaje === undefined) return (await db.all(`SELECT * FROM ${t('users')} ORDER BY created_at, email`)).map(toUser);
+      return (await db.all(`SELECT * FROM ${t('users')} WHERE trip_id = ? ORDER BY created_at, email`, [viaje])).map(toUser);
     },
     async getUser(id) {
       const r = await db.get(`SELECT * FROM ${t('users')} WHERE id = ?`, [id]);
@@ -321,7 +328,15 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
       return r ? toUser(r) : null;
     },
     async createUser(u) {
-      await db.run(`INSERT INTO ${t('users')}(id, email, role, password_hash, created_at) VALUES(?, ?, ?, '', ?)`, [u.id, u.email, u.role, now()]);
+      await db.run(`INSERT INTO ${t('users')}(id, email, role, password_hash, created_at, trip_id) VALUES(?, ?, ?, '', ?, ?)`, [u.id, u.email, u.role, now(), u.tripId]);
+    },
+    async createTrip() {
+      return db.transaction(async (tx) => {
+        const r = await tx.get(`SELECT COALESCE(MAX(id), 0) + 1 AS id FROM ${t('trip')}`);
+        const id = Number(r?.id ?? VIAJE_PREDETERMINADO);
+        await tx.run(`INSERT INTO ${t('trip')}(id, name, timezone, updated_at) VALUES(?, 'Mi viaje', 'America/New_York', ?)`, [id, now()]);
+        return id;
+      });
     },
     async updateUser(id, patch) {
       const sets: string[] = [];
