@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { ZodError } from 'zod';
 import { plantilla } from '../../shared/plantilla';
 import type { City, Op } from '../../shared/types';
-import { createAuth } from './auth';
+import { createAuth, type AuthedRequest } from './auth';
 import type { Config } from './config';
 import type { Db } from './db';
 import { HttpError } from './errors';
@@ -18,7 +18,7 @@ import { destinoBody, opsBody } from './model';
 import { rateLimit } from './ratelimit';
 import { buildSeed } from './seed';
 import { createHub } from './sse';
-import { createStore } from './store';
+import { createStore, VIAJE_PREDETERMINADO } from './store';
 import { createWeather } from './weather';
 
 /** Página 404 para direcciones que no son la app (la app vive en /#/…). Lee el nombre de shared/plantilla.ts. */
@@ -64,6 +64,8 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
   if (await store.isEmpty()) await store.importSnapshot(buildSeed());
   const auth = await createAuth(store, config.accessCode, config.seedUsers);
   const getWeather = createWeather(store);
+  /** Viaje de la petición: el de la cuenta que entró, o el de la clave del calendario. Sin cuentas, el viaje 1. */
+  const viajeDe = (req: Request) => (req as AuthedRequest).user?.tripId ?? (req as AuthedRequest).viajeCalendario ?? VIAJE_PREDETERMINADO;
 
   const app = express();
   app.disable('x-powered-by');
@@ -149,9 +151,9 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
   app.delete('/api/users/:id', auth.removeUser);
   app.put('/api/sharing', auth.setSharing);
 
-  app.get('/api/snapshot', async (_req, res) => {
+  app.get('/api/snapshot', async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
-    res.json(await store.snapshot());
+    res.json(await store.snapshot(viajeDe(req)));
   });
   app.get('/api/events', async (req, res) => {
     // Sin conexiones largas en serverless: 204 le indica al cliente que no reconecte y use sondeo.
@@ -164,7 +166,7 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
 
   app.post('/api/ops', async (req, res) => {
     const { ops } = parseBody(opsBody, req.body);
-    res.json({ rev: await store.applyOps(ops as Op[]) });
+    res.json({ rev: await store.applyOps(ops as Op[], viajeDe(req)) });
   });
 
   // REST por entidad (todas idempotentes: PUT hace upsert con id generado por el cliente).
@@ -177,14 +179,14 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
   ];
   for (const [path, entity] of routes) {
     const apply = (action: Op['action']) => async (req: Request, res: Response) => {
-      const rev = await store.applyOps([{ entity, action, id: String(req.params.id), data: req.body }]);
+      const rev = await store.applyOps([{ entity, action, id: String(req.params.id), data: req.body }], viajeDe(req));
       res.json({ rev });
     };
     app.put(`/api/${path}/:id`, apply('put'));
     app.patch(`/api/${path}/:id`, apply('patch'));
     app.delete(`/api/${path}/:id`, apply('delete'));
-    app.get(`/api/${path}`, async (_req, res) => {
-      res.json(((await store.snapshot()) as unknown as Record<string, unknown>)[path]);
+    app.get(`/api/${path}`, async (req, res) => {
+      res.json(((await store.snapshot(viajeDe(req))) as unknown as Record<string, unknown>)[path]);
     });
   }
   // Archivos adjuntos de las reservas (capturas, pases de abordar, PDF). Máx. ~3 MB por archivo.
@@ -200,14 +202,14 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(id) || !reservationId) throw new HttpError(422, 'Datos inválidos');
     if (!ATTACHMENT_MIME.test(mime)) throw new HttpError(422, 'Solo se admiten imágenes y PDF');
     if (!/^[A-Za-z0-9+/]+={0,2}$/.test(data) || data.length > 4_300_000) throw new HttpError(413, 'El archivo es demasiado grande (máx. 3 MB)');
-    res.json({ rev: await store.putAttachment({ id, reservationId, name, label, mime, data }) });
+    res.json({ rev: await store.putAttachment({ id, reservationId, name, label, mime, data }, viajeDe(req)) });
   });
   app.patch('/api/attachments/:id', express.json({ limit: '10kb' }), async (req, res) => {
     const label = String((req.body ?? {}).label ?? '').trim().slice(0, 60);
-    res.json({ rev: await store.labelAttachment(String(req.params.id), label) });
+    res.json({ rev: await store.labelAttachment(String(req.params.id), label, viajeDe(req)) });
   });
   app.get('/api/attachments/:id', async (req, res) => {
-    const file = await store.getAttachment(String(req.params.id));
+    const file = await store.getAttachment(String(req.params.id), viajeDe(req));
     if (!file) throw new HttpError(404, 'Archivo no encontrado');
     // El contenido de un id nunca cambia: se puede guardar en caché para verlo sin conexión.
     res.setHeader('Content-Type', file.mime);
@@ -219,17 +221,17 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
     res.send(Buffer.from(file.data, 'base64'));
   });
   app.delete('/api/attachments/:id', async (req, res) => {
-    res.json({ rev: await store.deleteAttachment(String(req.params.id)) });
+    res.json({ rev: await store.deleteAttachment(String(req.params.id), viajeDe(req)) });
   });
 
-  app.get('/api/trip', async (_req, res) => res.json((await store.snapshot()).trip));
+  app.get('/api/trip', async (req, res) => res.json((await store.snapshot(viajeDe(req))).trip));
   app.patch('/api/trip', async (req, res) => {
-    res.json({ rev: await store.applyOps([{ entity: 'trip', action: 'patch', id: 'trip', data: req.body }]) });
+    res.json({ rev: await store.applyOps([{ entity: 'trip', action: 'patch', id: 'trip', data: req.body }], viajeDe(req)) });
   });
 
   // --- Extras -------------------------------------------------------------
   app.get('/api/weather', async (req, res) => {
-    const snap = await store.snapshot();
+    const snap = await store.snapshot(viajeDe(req));
     const wanted: Partial<Record<City, string[]>> = {};
     for (const d of snap.days) (wanted[d.city] ??= []).push(d.date);
     res.json(await getWeather(wanted, snap.trip.timezone, req.query.refresh === '1'));
@@ -274,26 +276,26 @@ export async function createApp(db: Db, config: Config, opts: { log?: boolean } 
     }
   });
 
-  app.get('/api/export', async (_req, res) => {
-    const snap = await store.snapshot();
+  app.get('/api/export', async (req, res) => {
+    const snap = await store.snapshot(viajeDe(req));
     res.setHeader('Content-Disposition', 'attachment; filename="viaje-respaldo.json"');
     res.json(snap);
   });
   app.post('/api/import', async (req, res) => {
-    res.json({ rev: await store.importSnapshot(req.body) });
+    res.json({ rev: await store.importSnapshot(req.body, viajeDe(req)) });
   });
-  app.post('/api/reset', async (_req, res) => {
-    res.json({ rev: await store.importSnapshot(buildSeed()) });
+  app.post('/api/reset', async (req, res) => {
+    res.json({ rev: await store.importSnapshot(buildSeed(), viajeDe(req)) });
   });
 
-  app.get('/api/calendar.ics', async (_req, res) => {
+  app.get('/api/calendar.ics', async (req, res) => {
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename="viaje.ics"');
-    res.send(buildIcs(await store.snapshot()));
+    res.send(buildIcs(await store.snapshot(viajeDe(req))));
   });
   app.get('/api/calendar-link', (req, res) => {
     const base = `${req.protocol}://${req.get('host')}/api/calendar.ics`;
-    res.json({ url: auth.enabled ? `${base}?key=${auth.icsKey()}` : base });
+    res.json({ url: auth.enabled ? `${base}?key=${auth.icsKey(viajeDe(req))}` : base });
   });
 
   app.use('/api', (_req, _res, next) => next(new HttpError(404, 'Ruta no encontrada')));

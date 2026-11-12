@@ -93,8 +93,10 @@ CREATE TABLE IF NOT EXISTS viaje.users (
   role TEXT NOT NULL DEFAULT 'member',
   password_hash TEXT NOT NULL DEFAULT '',
   created_at BIGINT NOT NULL,
-  last_login BIGINT
+  last_login BIGINT,
+  trip_id INTEGER NOT NULL DEFAULT 1
 );
+ALTER TABLE viaje.users ADD COLUMN IF NOT EXISTS trip_id INTEGER NOT NULL DEFAULT 1;
 CREATE TABLE IF NOT EXISTS viaje.meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 
 -- Defensa en profundidad: RLS activo y sin acceso para los roles públicos de la API.

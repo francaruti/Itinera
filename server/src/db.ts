@@ -187,6 +187,9 @@ export const SQLITE_MIGRATIONS: string[] = [
   DROP TABLE trip;
   ALTER TABLE trip_nuevo RENAME TO trip;
   `,
+  /* v9: cada cuenta pertenece a un viaje (las cuentas anteriores son del viaje 1) */ `
+  ALTER TABLE users ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
+  `,
 ];
 
 function openSqlite(path: string): Db {
