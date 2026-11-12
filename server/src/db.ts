@@ -18,7 +18,7 @@ export interface Db extends Queryable {
 
 /* ---------------------------------- SQLite ---------------------------------- */
 
-const SQLITE_MIGRATIONS: string[] = [
+export const SQLITE_MIGRATIONS: string[] = [
   /* v1 */ `
   CREATE TABLE trip (
     id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -131,6 +131,47 @@ const SQLITE_MIGRATIONS: string[] = [
   ALTER TABLE expenses ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
   ALTER TABLE attachments ADD COLUMN trip_id INTEGER NOT NULL DEFAULT 1;
   `,
+  /* v7: días y actividades se identifican también por viaje (dos viajes pueden tener la misma fecha).
+     SQLite no cambia claves con ALTER, así que se reconstruyen las dos tablas con sus datos. */ `
+  CREATE TABLE days_nuevo (
+    trip_id INTEGER NOT NULL DEFAULT 1,
+    date TEXT NOT NULL,
+    city TEXT NOT NULL,
+    travel INTEGER NOT NULL DEFAULT 0,
+    title TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    updated_at INTEGER NOT NULL,
+    PRIMARY KEY (trip_id, date)
+  );
+  INSERT INTO days_nuevo (trip_id, date, city, travel, title, notes, updated_at)
+    SELECT trip_id, date, city, travel, title, notes, updated_at FROM days;
+  CREATE TABLE activities_nuevo (
+    id TEXT PRIMARY KEY,
+    trip_id INTEGER NOT NULL DEFAULT 1,
+    day_date TEXT NOT NULL,
+    position REAL NOT NULL DEFAULT 0,
+    time TEXT NOT NULL DEFAULT '',
+    text TEXT NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0,
+    category TEXT NOT NULL DEFAULT 'other',
+    place TEXT NOT NULL DEFAULT '',
+    lat REAL,
+    lng REAL,
+    cost REAL,
+    booking TEXT NOT NULL DEFAULT 'none',
+    url TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY (trip_id, day_date) REFERENCES days_nuevo(trip_id, date) ON DELETE CASCADE ON UPDATE CASCADE
+  );
+  INSERT INTO activities_nuevo (id, trip_id, day_date, position, time, text, done, category, place, lat, lng, cost, booking, url, notes, updated_at)
+    SELECT id, trip_id, day_date, position, time, text, done, category, place, lat, lng, cost, booking, url, notes, updated_at FROM activities;
+  DROP TABLE activities;
+  DROP TABLE days;
+  ALTER TABLE days_nuevo RENAME TO days;
+  ALTER TABLE activities_nuevo RENAME TO activities;
+  CREATE INDEX idx_activities_day ON activities(trip_id, day_date, position);
+  `,
 ];
 
 function openSqlite(path: string): Db {
@@ -139,16 +180,26 @@ function openSqlite(path: string): Db {
   raw.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
 
   const version = (raw.prepare('PRAGMA user_version').get() as { user_version: number }).user_version;
-  for (let v = version; v < SQLITE_MIGRATIONS.length; v++) {
-    raw.exec('BEGIN');
-    try {
-      raw.exec(SQLITE_MIGRATIONS[v]);
-      raw.exec(`PRAGMA user_version = ${v + 1}`);
-      raw.exec('COMMIT');
-    } catch (err) {
-      raw.exec('ROLLBACK');
-      throw err;
+  // Mientras se migra, las claves foráneas están apagadas: al reconstruir una tabla no deben borrarse filas en cascada.
+  raw.exec('PRAGMA foreign_keys = OFF');
+  try {
+    for (let v = version; v < SQLITE_MIGRATIONS.length; v++) {
+      raw.exec('BEGIN');
+      try {
+        raw.exec(SQLITE_MIGRATIONS[v]);
+        // Ninguna migración puede dejar referencias rotas: si la hay, se revierte ese paso completo.
+        if (raw.prepare('PRAGMA foreign_key_check').all().length > 0) {
+          throw new Error(`La migración ${v + 1} dejó referencias rotas entre tablas`);
+        }
+        raw.exec(`PRAGMA user_version = ${v + 1}`);
+        raw.exec('COMMIT');
+      } catch (err) {
+        raw.exec('ROLLBACK');
+        throw err;
+      }
     }
+  } finally {
+    raw.exec('PRAGMA foreign_keys = ON');
   }
 
   const q: Queryable = {
