@@ -172,6 +172,21 @@ export const SQLITE_MIGRATIONS: string[] = [
   ALTER TABLE activities_nuevo RENAME TO activities;
   CREATE INDEX idx_activities_day ON activities(trip_id, day_date, position);
   `,
+  /* v8: la tabla del viaje admite más de un viaje (antes solo el id 1) */ `
+  CREATE TABLE trip_nuevo (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    timezone TEXT NOT NULL,
+    budget_usd REAL NOT NULL DEFAULT 0,
+    fx_rate REAL NOT NULL DEFAULT 4000,
+    travelers TEXT NOT NULL DEFAULT '[]',
+    updated_at INTEGER NOT NULL
+  );
+  INSERT INTO trip_nuevo (id, name, timezone, budget_usd, fx_rate, travelers, updated_at)
+    SELECT id, name, timezone, budget_usd, fx_rate, travelers, updated_at FROM trip;
+  DROP TABLE trip;
+  ALTER TABLE trip_nuevo RENAME TO trip;
+  `,
 ];
 
 function openSqlite(path: string): Db {

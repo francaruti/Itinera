@@ -87,6 +87,9 @@ export interface UserRow {
   lastLogin: number | null;
 }
 
+/** Viaje que se usa cuando no se indica otro (mientras la app tenga un solo viaje). */
+export const VIAJE_PREDETERMINADO = 1;
+
 export interface Store {
   listUsers(): Promise<UserRow[]>;
   getUser(id: string): Promise<UserRow | null>;
@@ -95,19 +98,19 @@ export interface Store {
   updateUser(id: string, patch: { role?: UserRole; passwordHash?: string; lastLogin?: number }): Promise<void>;
   deleteUser(id: string): Promise<void>;
 
-  snapshot(): Promise<Snapshot>;
+  snapshot(viaje?: number): Promise<Snapshot>;
   rev(): Promise<number>;
-  applyOps(ops: Op[]): Promise<number>;
-  importSnapshot(data: unknown): Promise<number>;
+  applyOps(ops: Op[], viaje?: number): Promise<number>;
+  importSnapshot(data: unknown, viaje?: number): Promise<number>;
   isEmpty(): Promise<boolean>;
   getMeta(key: string): Promise<string | null>;
   setMeta(key: string, value: string): Promise<void>;
   getDestinos(): Promise<Record<string, CityMeta>>;
   addDestino(input: { name: string; lat: number; lng: number }): Promise<{ key: string; meta: CityMeta; rev: number }>;
-  putAttachment(a: { id: string; reservationId: string; name: string; label?: string; mime: string; data: string }): Promise<number>;
-  labelAttachment(id: string, label: string): Promise<number>;
-  getAttachment(id: string): Promise<{ name: string; mime: string; data: string } | null>;
-  deleteAttachment(id: string): Promise<number>;
+  putAttachment(a: { id: string; reservationId: string; name: string; label?: string; mime: string; data: string }, viaje?: number): Promise<number>;
+  labelAttachment(id: string, label: string, viaje?: number): Promise<number>;
+  getAttachment(id: string, viaje?: number): Promise<{ name: string; mime: string; data: string } | null>;
+  deleteAttachment(id: string, viaje?: number): Promise<number>;
 }
 
 const toUser = (r: Row): UserRow => ({
@@ -166,86 +169,88 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     }
   }
 
-  async function put(tx: Queryable, spec: Spec, id: string, input: unknown) {
+  async function put(tx: Queryable, spec: Spec, id: string, input: unknown, viaje: number) {
     const data = parse(spec.full, input);
-    const columns = [spec.pk, ...spec.cols.map((c) => c.col), 'updated_at'];
-    const values = [id, ...spec.cols.map((c) => toDb(c, data[c.key])), now()];
+    const columns = [spec.pk, ...spec.cols.map((c) => c.col), 'updated_at', 'trip_id'];
+    const values = [id, ...spec.cols.map((c) => toDb(c, data[c.key])), now(), viaje];
     const updates = columns.slice(1).map((col) => `${q(col)} = excluded.${q(col)}`);
-    // Los días se identifican por viaje y fecha; el resto, por su clave principal.
+    // Los días se identifican por viaje y fecha. El resto, por su id, y solo se actualiza si es de este viaje.
     const conflicto = spec.table === 'days' ? ['trip_id', spec.pk] : [spec.pk];
-    await wrapDb(() =>
+    const res = await wrapDb(() =>
       tx.run(
         `INSERT INTO ${t(spec.table)} (${columns.map(q).join(', ')}) VALUES (${columns.map(() => '?').join(', ')})
-         ON CONFLICT(${conflicto.map(q).join(', ')}) DO UPDATE SET ${updates.join(', ')}`,
+         ON CONFLICT(${conflicto.map(q).join(', ')}) DO UPDATE SET ${updates.join(', ')}
+         WHERE trip_id = excluded.trip_id`,
         values,
       ),
     );
+    if (res.changes === 0) throw new HttpError(409, `${spec.entity} ${id} ya existe en otro viaje`);
   }
 
   /** Inserción masiva (usada al importar): valida cada fila y agrupa en sentencias de varias filas. */
-  async function putMany(tx: Queryable, spec: Spec, items: Array<Record<string, unknown>>) {
+  async function putMany(tx: Queryable, spec: Spec, items: Array<Record<string, unknown>>, viaje: number) {
     const byId = new Map<string, Record<string, unknown>>();
     for (const item of items) {
       const id = String(item[spec.pk]);
       byId.set(id, parse(spec.full, item));
     }
-    const columns = [spec.pk, ...spec.cols.map((c) => c.col), 'updated_at'];
+    const columns = [spec.pk, ...spec.cols.map((c) => c.col), 'updated_at', 'trip_id'];
     const rowSql = `(${columns.map(() => '?').join(', ')})`;
     const entries = [...byId.entries()];
     for (let i = 0; i < entries.length; i += 100) {
       const chunk = entries.slice(i, i + 100);
-      const values = chunk.flatMap(([id, data]) => [id, ...spec.cols.map((c) => toDb(c, data[c.key])), now()]);
+      const values = chunk.flatMap(([id, data]) => [id, ...spec.cols.map((c) => toDb(c, data[c.key])), now(), viaje]);
       await wrapDb(() =>
         tx.run(`INSERT INTO ${t(spec.table)} (${columns.map(q).join(', ')}) VALUES ${chunk.map(() => rowSql).join(', ')}`, values),
       );
     }
   }
 
-  async function patch(tx: Queryable, spec: Spec, id: string, input: unknown) {
+  async function patch(tx: Queryable, spec: Spec, id: string, input: unknown, viaje: number) {
     const data = parse(spec.patch, input);
     const cols = spec.cols.filter((c) => data[c.key] !== undefined);
     if (cols.length === 0) return;
     const sets = [...cols.map((c) => `${q(c.col)} = ?`), 'updated_at = ?'];
-    const values = [...cols.map((c) => toDb(c, data[c.key])), now(), id];
-    const res = await wrapDb(() => tx.run(`UPDATE ${t(spec.table)} SET ${sets.join(', ')} WHERE ${q(spec.pk)} = ?`, values));
+    const values = [...cols.map((c) => toDb(c, data[c.key])), now(), id, viaje];
+    const res = await wrapDb(() => tx.run(`UPDATE ${t(spec.table)} SET ${sets.join(', ')} WHERE ${q(spec.pk)} = ? AND trip_id = ?`, values));
     if (res.changes === 0) throw new HttpError(404, `${spec.entity} ${id} no existe`);
   }
 
-  async function remove(tx: Queryable, spec: Spec, id: string) {
-    await tx.run(`DELETE FROM ${t(spec.table)} WHERE ${q(spec.pk)} = ?`, [id]);
+  async function remove(tx: Queryable, spec: Spec, id: string, viaje: number) {
+    await tx.run(`DELETE FROM ${t(spec.table)} WHERE ${q(spec.pk)} = ? AND trip_id = ?`, [id, viaje]);
   }
 
-  async function patchTrip(tx: Queryable, input: unknown) {
+  async function patchTrip(tx: Queryable, input: unknown, viaje: number) {
     const data = parse(tripPatch, input);
     const cols = TRIP_COLS.filter((c) => data[c.key] !== undefined);
     if (cols.length === 0) return;
     const sets = [...cols.map((c) => `${q(c.col)} = ?`), 'updated_at = ?'];
-    await tx.run(`UPDATE ${t('trip')} SET ${sets.join(', ')} WHERE id = 1`, [...cols.map((c) => toDb(c, data[c.key])), now()]);
+    await tx.run(`UPDATE ${t('trip')} SET ${sets.join(', ')} WHERE id = ?`, [...cols.map((c) => toDb(c, data[c.key])), now(), viaje]);
   }
 
-  async function applyOp(tx: Queryable, op: Op) {
+  async function applyOp(tx: Queryable, op: Op, viaje: number) {
     if (op.entity === 'trip') {
       if (op.action !== 'patch') throw new HttpError(422, 'El viaje solo admite patch');
-      return patchTrip(tx, op.data ?? {});
+      return patchTrip(tx, op.data ?? {}, viaje);
     }
     const spec = SPECS[op.entity];
     switch (op.action) {
       case 'put':
-        return put(tx, spec, op.id, op.data ?? {});
+        return put(tx, spec, op.id, op.data ?? {}, viaje);
       case 'patch':
-        return patch(tx, spec, op.id, op.data ?? {});
+        return patch(tx, spec, op.id, op.data ?? {}, viaje);
       case 'delete':
-        if (op.entity === 'reservation') await tx.run(`DELETE FROM ${t('attachments')} WHERE reservation_id = ?`, [op.id]);
-        return remove(tx, spec, op.id);
+        if (op.entity === 'reservation') await tx.run(`DELETE FROM ${t('attachments')} WHERE reservation_id = ? AND trip_id = ?`, [op.id, viaje]);
+        return remove(tx, spec, op.id, viaje);
     }
   }
 
-  async function snapshot(): Promise<Snapshot> {
+  async function snapshot(viaje: number = VIAJE_PREDETERMINADO): Promise<Snapshot> {
     const list = async (spec: Spec) =>
-      (await db.all(`SELECT * FROM ${t(spec.table)} ORDER BY ${spec.order}`)).map((r) =>
+      (await db.all(`SELECT * FROM ${t(spec.table)} WHERE trip_id = ? ORDER BY ${spec.order}`, [viaje])).map((r) =>
         mapRow(spec.cols, r, { key: spec.pk === 'date' ? 'date' : 'id', col: spec.pk }),
       );
-    const attachmentRows = await db.all(`SELECT id, reservation_id, name, label, mime, size, created_at FROM ${t('attachments')} ORDER BY created_at, id`);
+    const attachmentRows = await db.all(`SELECT id, reservation_id, name, label, mime, size, created_at FROM ${t('attachments')} WHERE trip_id = ? ORDER BY created_at, id`, [viaje]);
     const attachments: Attachment[] = attachmentRows.map((r) => ({
       id: String(r.id),
       reservationId: String(r.reservation_id),
@@ -257,7 +262,7 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     }));
     const destinos = await getDestinos();
     const [tripRow, currentRev, days0, activities, checklist, reservations, expenses] = await Promise.all([
-      db.get(`SELECT * FROM ${t('trip')} WHERE id = 1`) as Promise<Row>,
+      db.get(`SELECT * FROM ${t('trip')} WHERE id = ?`, [viaje]) as Promise<Row>,
       rev(),
       list(SPECS.day),
       list(SPECS.activity),
@@ -330,36 +335,38 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     async deleteUser(id) {
       await db.run(`DELETE FROM ${t('users')} WHERE id = ?`, [id]);
     },
-    async putAttachment(a) {
+    async putAttachment(a, viaje = VIAJE_PREDETERMINADO) {
       const next = await db.transaction(async (tx) => {
-        const res = await tx.get(`SELECT 1 AS x FROM ${t('reservations')} WHERE id = ?`, [a.reservationId]);
+        const res = await tx.get(`SELECT 1 AS x FROM ${t('reservations')} WHERE id = ? AND trip_id = ?`, [a.reservationId, viaje]);
         if (!res) throw new HttpError(422, 'La reserva no existe');
-        await tx.run(
-          `INSERT INTO ${t('attachments')}(id, reservation_id, name, label, mime, size, data, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(id) DO UPDATE SET name = excluded.name, label = excluded.label, mime = excluded.mime, size = excluded.size, data = excluded.data`,
-          [a.id, a.reservationId, a.name, a.label ?? '', a.mime, Math.floor((a.data.length * 3) / 4), a.data, now()],
+        const guardado = await tx.run(
+          `INSERT INTO ${t('attachments')}(id, reservation_id, name, label, mime, size, data, created_at, trip_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+           ON CONFLICT(id) DO UPDATE SET name = excluded.name, label = excluded.label, mime = excluded.mime, size = excluded.size, data = excluded.data
+           WHERE trip_id = excluded.trip_id`,
+          [a.id, a.reservationId, a.name, a.label ?? '', a.mime, Math.floor((a.data.length * 3) / 4), a.data, now(), viaje],
         );
+        if (guardado.changes === 0) throw new HttpError(409, 'Ese archivo ya existe en otro viaje');
         return bump(tx);
       });
       onChange?.(next);
       return next;
     },
-    async labelAttachment(id, label) {
+    async labelAttachment(id, label, viaje = VIAJE_PREDETERMINADO) {
       const next = await db.transaction(async (tx) => {
-        const res = await tx.run(`UPDATE ${t('attachments')} SET label = ? WHERE id = ?`, [label, id]);
+        const res = await tx.run(`UPDATE ${t('attachments')} SET label = ? WHERE id = ? AND trip_id = ?`, [label, id, viaje]);
         if (res.changes === 0) throw new HttpError(404, 'Archivo no encontrado');
         return bump(tx);
       });
       onChange?.(next);
       return next;
     },
-    async getAttachment(id) {
-      const row = await db.get(`SELECT name, mime, data FROM ${t('attachments')} WHERE id = ?`, [id]);
+    async getAttachment(id, viaje = VIAJE_PREDETERMINADO) {
+      const row = await db.get(`SELECT name, mime, data FROM ${t('attachments')} WHERE id = ? AND trip_id = ?`, [id, viaje]);
       return row ? { name: String(row.name), mime: String(row.mime), data: String(row.data) } : null;
     },
-    async deleteAttachment(id) {
+    async deleteAttachment(id, viaje = VIAJE_PREDETERMINADO) {
       const next = await db.transaction(async (tx) => {
-        await tx.run(`DELETE FROM ${t('attachments')} WHERE id = ?`, [id]);
+        await tx.run(`DELETE FROM ${t('attachments')} WHERE id = ? AND trip_id = ?`, [id, viaje]);
         return bump(tx);
       });
       onChange?.(next);
@@ -368,15 +375,15 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     async isEmpty() {
       return !(await db.get(`SELECT 1 AS x FROM ${t('trip')} LIMIT 1`));
     },
-    async applyOps(ops) {
+    async applyOps(ops, viaje = VIAJE_PREDETERMINADO) {
       const next = await db.transaction(async (tx) => {
-        for (const op of ops) await applyOp(tx, op);
+        for (const op of ops) await applyOp(tx, op, viaje);
         return bump(tx);
       });
       onChange?.(next);
       return next;
     },
-    async importSnapshot(input) {
+    async importSnapshot(input, viaje = VIAJE_PREDETERMINADO) {
       // Los destinos del archivo deben estar registrados antes de validar los días que los usan.
       const destinosArchivo = destinosMap.safeParse((input as { destinos?: unknown } | null)?.destinos);
       if (destinosArchivo.success && destinosArchivo.data) registrarDestinos(destinosArchivo.data);
@@ -390,17 +397,17 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
         throw err;
       }
       const next = await db.transaction(async (tx) => {
-        for (const name of ['activities', 'days', 'checklist', 'reservations', 'expenses']) await tx.run(`DELETE FROM ${t(name)}`);
-        const hasTrip = await tx.get(`SELECT 1 AS x FROM ${t('trip')} WHERE id = 1`);
+        for (const name of ['activities', 'days', 'checklist', 'reservations', 'expenses']) await tx.run(`DELETE FROM ${t(name)} WHERE trip_id = ?`, [viaje]);
+        const hasTrip = await tx.get(`SELECT 1 AS x FROM ${t('trip')} WHERE id = ?`, [viaje]);
         if (!hasTrip) {
-          await tx.run(`INSERT INTO ${t('trip')}(id, name, timezone, updated_at) VALUES(1, 'Mi viaje', 'America/New_York', ?)`, [now()]);
+          await tx.run(`INSERT INTO ${t('trip')}(id, name, timezone, updated_at) VALUES(?, 'Mi viaje', 'America/New_York', ?)`, [viaje, now()]);
         }
-        await patchTrip(tx, parsed.trip);
-        await putMany(tx, SPECS.day, parsed.days);
-        await putMany(tx, SPECS.activity, parsed.activities);
-        await putMany(tx, SPECS.checklist, parsed.checklist);
-        await putMany(tx, SPECS.reservation, parsed.reservations);
-        await putMany(tx, SPECS.expense, parsed.expenses);
+        await patchTrip(tx, parsed.trip, viaje);
+        await putMany(tx, SPECS.day, parsed.days, viaje);
+        await putMany(tx, SPECS.activity, parsed.activities, viaje);
+        await putMany(tx, SPECS.checklist, parsed.checklist, viaje);
+        await putMany(tx, SPECS.reservation, parsed.reservations, viaje);
+        await putMany(tx, SPECS.expense, parsed.expenses, viaje);
         if (parsed.destinos) await setMeta('destinos', JSON.stringify({ ...(await getDestinos(tx)), ...parsed.destinos }), tx);
         return bump(tx);
       });
