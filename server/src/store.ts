@@ -171,10 +171,12 @@ export function createStore(db: Db, onChange?: (rev: number) => void): Store {
     const columns = [spec.pk, ...spec.cols.map((c) => c.col), 'updated_at'];
     const values = [id, ...spec.cols.map((c) => toDb(c, data[c.key])), now()];
     const updates = columns.slice(1).map((col) => `${q(col)} = excluded.${q(col)}`);
+    // Los días se identifican por viaje y fecha; el resto, por su clave principal.
+    const conflicto = spec.table === 'days' ? ['trip_id', spec.pk] : [spec.pk];
     await wrapDb(() =>
       tx.run(
         `INSERT INTO ${t(spec.table)} (${columns.map(q).join(', ')}) VALUES (${columns.map(() => '?').join(', ')})
-         ON CONFLICT(${q(spec.pk)}) DO UPDATE SET ${updates.join(', ')}`,
+         ON CONFLICT(${conflicto.map(q).join(', ')}) DO UPDATE SET ${updates.join(', ')}`,
         values,
       ),
     );
